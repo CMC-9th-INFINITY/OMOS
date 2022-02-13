@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Getter
 @AllArgsConstructor
@@ -38,6 +37,8 @@ public class Posts extends BaseTimeEntity{
 
     private String contents;
 
+
+    private int cnt;
 
 
 
