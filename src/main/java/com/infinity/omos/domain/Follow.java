@@ -5,10 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
 
 @Getter
 @AllArgsConstructor
@@ -21,8 +19,12 @@ public class Follow extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long fromUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="from_user_id")
+    private User fromUserId;
 
-    private Long toUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="to_user_id")
+    private User toUserId;
 
 }
