@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
-    Optional<User> find
+
 
     @EntityGraph(attributePaths = "authorities") //Eager조회
     Optional<User> findOneWithAuthoritiesByEmail(String email);

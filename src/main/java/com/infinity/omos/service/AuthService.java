@@ -40,7 +40,7 @@ public class AuthService {
                 .token(tokenDto.getRefreshToken())
                 .build();
 
-        tokenDto.updateId(queryRepository.findUserIdByUserEmail(email), queryRepository.findSchoolIdByUserEmail(email));
+        tokenDto.updateId(queryRepository.findUserIdByUserEmail(email));
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
 
@@ -88,3 +88,4 @@ public class AuthService {
         // 토큰 발급
         return tokenDto;
     }
+}
