@@ -50,6 +50,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()//권한
                 .antMatchers("/api/auth/**").permitAll() //로그인 부분
+                .antMatchers("/swagger-ui.html/**","/swagger-resources/**","/v2/api-docs","/webjars/**").permitAll()
                 .anyRequest().authenticated()// 그밖에 모든 부분은 인증받아야함
 
                 .and()

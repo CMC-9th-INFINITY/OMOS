@@ -48,6 +48,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
 	implementation 'com.querydsl:querydsl-jpa'
+
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 }
 
 test {
@@ -59,6 +62,7 @@ test {
 def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
+	library = "com.querydsl:querydsl-apt"
 	jpa = true
 	querydslSourcesDir = querydslDir
 }
@@ -71,9 +75,8 @@ configurations {
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
-querydsl {
-	library = "com.querydsl:querydsl-apt"
-	jpa = true
-	querydslSourcesDir = querydslDir
-}
+
+compileQuerydsl.doFirst { if(file(querydslDir).exists() ) delete(file(querydslDir)) }
+
+
 

@@ -48,7 +48,7 @@ public class AuthService {
 
     @Transactional
     public UserResponseDto signUp(SignUpDto signUpDto) {
-        if (userRepository.findOneWithAuthoritiesByEmail(signUpDto.getEmail()).orElse(null) != null) {
+        if (userRepository.existsByEmail(signUpDto.getEmail())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 

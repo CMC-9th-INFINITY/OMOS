@@ -13,7 +13,6 @@ public class TokenDto {
     private String accessToken;
     private String refreshToken;
     private Long userId;
-    private Long schoolId;
 
     public void updateId(Long userId) {
         this.userId = userId;
