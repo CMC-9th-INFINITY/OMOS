@@ -32,6 +32,7 @@ public class User {
 
     private String profileUrl;
 
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 

@@ -13,6 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/api/auth")
@@ -33,10 +36,18 @@ public class AuthController {
         return ResponseEntity.ok(authService.signUp(signUpDto));
     }
 
-    @ApiOperation(value = "재발급",notes = "refreshkey를 보내주세요")
+    @ApiOperation(value = "재발급",notes = "refreshtoken을 보내주세요")
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenDto tokenDto) {
         return ResponseEntity.ok(authService.reissue(tokenDto));
     }
+
+    @ApiOperation(value = "kakao로그인",notes = "kakaoaccesstoken을 보내주세요")
+    @PostMapping("/kakao")
+    public ResponseEntity<TokenDto> kakaoLogin(@RequestParam(name = "accesstoken") String kakaoAccessToken) throws IOException {
+        return ResponseEntity.ok(authService.kakaoLogin(kakaoAccessToken));
+    }
+
+
 
 }

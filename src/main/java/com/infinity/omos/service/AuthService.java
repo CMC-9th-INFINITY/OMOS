@@ -1,5 +1,6 @@
 package com.infinity.omos.service;
 
+import com.infinity.omos.api.createKakaoUser;
 import com.infinity.omos.config.jwt.JwtTokenProvider;
 import com.infinity.omos.domain.*;
 
@@ -15,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -87,5 +90,21 @@ public class AuthService {
 
         // 토큰 발급
         return tokenDto;
+    }
+
+    @Transactional
+    public TokenDto kakaoLogin(String kakaoAccessToken) throws IOException {
+        SignUpDto signUpDto=createKakaoUser.kakaoApi(kakaoAccessToken);
+        if (userRepository.existsByEmail(signUpDto.getEmail())) { //존재하면 로그인해서 토큰주기
+            return login(LoginDto.builder()
+                    .email(signUpDto.getEmail())
+                    .password(signUpDto.getPassword())
+                    .build());
+        }
+
+        User user = User.toUser(signUpDto, Authority.ROLE_USER, passwordEncoder);
+        userRepository.save(user);
+        return null;
+
     }
 }
