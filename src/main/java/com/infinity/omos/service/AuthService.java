@@ -31,6 +31,9 @@ public class AuthService {
 
     @Transactional
     public TokenDto login(LoginDto loginDto) {
+        if(userRepository.findByEmail(loginDto.getEmail()).orElse(null)==null){
+            throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
+        }
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication(); // ID/PW로 AuthenticationToken 생성
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken); // 사용자 비밀번호 체크, CustomUserDetailsService에서의 loadUserByUsername 메서드가 실행됨
         SecurityContextHolder.getContext().setAuthentication(authentication);//securityContext에 저장
