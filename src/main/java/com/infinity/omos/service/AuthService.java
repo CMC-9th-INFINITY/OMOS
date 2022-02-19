@@ -1,12 +1,8 @@
 package com.infinity.omos.service;
 
-import com.infinity.omos.api.createKakaoUser;
 import com.infinity.omos.config.jwt.JwtTokenProvider;
 import com.infinity.omos.domain.*;
-import com.infinity.omos.dto.LoginDto;
-import com.infinity.omos.dto.SignUpDto;
-import com.infinity.omos.dto.TokenDto;
-import com.infinity.omos.dto.UserResponseDto;
+import com.infinity.omos.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,8 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -98,20 +92,20 @@ public class AuthService {
         return tokenDto;
     }
 
+
     @Transactional
-    public TokenDto kakaoLogin(String kakaoAccessToken) throws IOException {
-        SignUpDto signUpDto = createKakaoUser.kakaoApi(kakaoAccessToken);
-        if (userRepository.existsByEmail(signUpDto.getEmail())) { //존재하면 로그인해서 토큰주기
-            return login(LoginDto.builder()
-                    .email(signUpDto.getEmail())
-                    .password(signUpDto.getPassword())
-                    .build());
+    public UserResponseDto kakaoSignUp(KakaoSignUpDto kakaoSignUpDto) {
+        if (userRepository.existsByNickname(kakaoSignUpDto.getNickname())) {
+            throw new RuntimeException("이미 있는 닉네임입니다");
         }
 
-        User user = User.toUser(signUpDto, Authority.ROLE_USER, passwordEncoder);
-        userRepository.save(user);
-        return null;
+        User user = User.toUser(kakaoSignUpDto, Authority.ROLE_USER, passwordEncoder);
+        return UserResponseDto.of(userRepository.save(user));
+    }
 
+    @Transactional
+    public void kakaoLogin(String email){
+        
     }
 
 }

@@ -1,9 +1,6 @@
 package com.infinity.omos.controller;
 
-import com.infinity.omos.dto.LoginDto;
-import com.infinity.omos.dto.SignUpDto;
-import com.infinity.omos.dto.TokenDto;
-import com.infinity.omos.dto.UserResponseDto;
+import com.infinity.omos.dto.*;
 import com.infinity.omos.service.AuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,10 +36,10 @@ public class AuthController {
         return ResponseEntity.ok(authService.reissue(tokenDto));
     }
 
-    @ApiOperation(value = "kakao로그인", notes = "kakaoaccesstoken을 보내주세요")
-    @PostMapping("/kakao")
-    public ResponseEntity<TokenDto> kakaoLogin(@RequestParam(name = "accesstoken") String kakaoAccessToken) throws IOException {
-        return ResponseEntity.ok(authService.kakaoLogin(kakaoAccessToken));
+    @ApiOperation(value = "kakao회원가입", notes = "id를 보내주세요")
+    @PostMapping("/kakaoSignUp")
+    public ResponseEntity<UserResponseDto> kakaoLogin(@RequestBody KakaoSignUpDto kakaoSignUpDto) {
+        return ResponseEntity.ok(authService.kakaoSignUp(kakaoSignUpDto));
     }
 
     @ApiOperation(value = "이메일중복체크", notes = "중복이면 false, 중복이 아니면 true를 보내드려요")

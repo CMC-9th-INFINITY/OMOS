@@ -8,25 +8,23 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
-@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @Builder
-public class SignUpDto {
+@NoArgsConstructor
+public class KakaoSignUpDto {
 
     @NotNull
-    private String email;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
+    private String id;
 
     @NotNull
     private String nickname;
 
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
+    public SignUpDto to(String id, String nickname){
+        return SignUpDto.builder()
+                .email(id)
+                .password(id)
+                .nickname(nickname)
+                .build();
     }
-
-
-
 }

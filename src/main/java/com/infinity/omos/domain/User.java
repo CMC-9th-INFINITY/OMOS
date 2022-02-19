@@ -1,5 +1,6 @@
 package com.infinity.omos.domain;
 
+import com.infinity.omos.dto.KakaoSignUpDto;
 import com.infinity.omos.dto.SignUpDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,6 +42,15 @@ public class User {
                 .email(signUpDto.getEmail())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .nickname(signUpDto.getNickname())
+                .authority(authority)
+                .build();
+    }
+
+    public static User toUser(KakaoSignUpDto kakaoSignUpDto, Authority authority, PasswordEncoder passwordEncoder ){
+        return User.builder()
+                .email(kakaoSignUpDto.getId())
+                .password(passwordEncoder.encode(kakaoSignUpDto.getId()))
+                .nickname(kakaoSignUpDto.getNickname())
                 .authority(authority)
                 .build();
     }
