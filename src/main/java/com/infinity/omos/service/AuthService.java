@@ -82,14 +82,18 @@ public class AuthService {
 
 
     @Transactional
-    public StateDto snsSignUp(SnsSignUpDto snsSignUpDto) {
+    public TokenDto snsSignUp(SnsSignUpDto snsSignUpDto) {
         if (userRepository.existsByNickname(snsSignUpDto.getNickname())) {
             throw new RuntimeException("이미 있는 닉네임입니다");
         }
 
         User user = User.toUser(snsSignUpDto, Authority.ROLE_USER, passwordEncoder);
         userRepository.save(user);
-        return StateDto.builder().state(true).build();
+
+        return snsLogin(SnsLoginDto.builder()
+                .email(user.getEmail())
+                .type(snsSignUpDto.getType())
+                .build());
     }
 
     @Transactional

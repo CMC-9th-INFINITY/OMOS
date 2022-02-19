@@ -34,9 +34,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.reissue(tokenDto));
     }
 
-    @ApiOperation(value = "SNS회원가입", notes = "kakao의 id 혹은 apple의 email을 넣어주세요. id 또한 eamil에 넣어주시면 됩니다. type은 KAKAO, APPLE 에서 골라주세요")
+    @ApiOperation(value = "SNS회원가입", notes = "kakao의 id 혹은 apple의 email을 넣어주세요. id 또한 eamil에 넣어주시면 됩니다. type은 KAKAO, APPLE 에서 골라주세요. \n 회원가입이 완료될경우, 자동으로 로그인하여 Token을 주는 식으로 생각했습니다")
     @PostMapping("/sns-signup")
-    public ResponseEntity<StateDto> kakaoLogin(@RequestBody SnsSignUpDto snsSignUpDto) {
+    public ResponseEntity<TokenDto> kakaoLogin(@RequestBody SnsSignUpDto snsSignUpDto) {
         return ResponseEntity.ok(authService.snsSignUp(snsSignUpDto));
     }
 
