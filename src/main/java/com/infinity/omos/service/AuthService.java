@@ -3,7 +3,6 @@ package com.infinity.omos.service;
 import com.infinity.omos.api.createKakaoUser;
 import com.infinity.omos.config.jwt.JwtTokenProvider;
 import com.infinity.omos.domain.*;
-
 import com.infinity.omos.dto.LoginDto;
 import com.infinity.omos.dto.SignUpDto;
 import com.infinity.omos.dto.TokenDto;
@@ -29,9 +28,14 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional(readOnly = true)
+    public boolean checkDuplicatedEmail(String email) {
+        return !userRepository.existsByEmail(email);
+    }
+
     @Transactional
     public TokenDto login(LoginDto loginDto) {
-        if(userRepository.findByEmail(loginDto.getEmail()).orElse(null)==null){
+        if (userRepository.findByEmail(loginDto.getEmail()).orElse(null) == null) {
             throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
         }
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication(); // ID/PW로 AuthenticationToken 생성
@@ -54,10 +58,9 @@ public class AuthService {
 
     @Transactional
     public UserResponseDto signUp(SignUpDto signUpDto) {
-        if (userRepository.existsByEmail(signUpDto.getEmail())) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다");
+        if (userRepository.existsByNickname(signUpDto.getNickname())) {
+            throw new RuntimeException("이미 있는 닉네임입니다");
         }
-
 
         User user = User.toUser(signUpDto, Authority.ROLE_USER, passwordEncoder);
 
@@ -97,7 +100,7 @@ public class AuthService {
 
     @Transactional
     public TokenDto kakaoLogin(String kakaoAccessToken) throws IOException {
-        SignUpDto signUpDto=createKakaoUser.kakaoApi(kakaoAccessToken);
+        SignUpDto signUpDto = createKakaoUser.kakaoApi(kakaoAccessToken);
         if (userRepository.existsByEmail(signUpDto.getEmail())) { //존재하면 로그인해서 토큰주기
             return login(LoginDto.builder()
                     .email(signUpDto.getEmail())
@@ -110,4 +113,5 @@ public class AuthService {
         return null;
 
     }
+
 }
