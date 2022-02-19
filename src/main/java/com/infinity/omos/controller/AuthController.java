@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @Controller
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -26,7 +24,7 @@ public class AuthController {
 
     @ApiOperation(value = "이메일회원가입", notes = "이메일 회원가입입니다")
     @PostMapping("/signup")
-    public ResponseEntity<UserResponseDto> signup(@RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<StateDto> signup(@RequestBody SignUpDto signUpDto) {
         return ResponseEntity.ok(authService.signUp(signUpDto));
     }
 
@@ -36,17 +34,22 @@ public class AuthController {
         return ResponseEntity.ok(authService.reissue(tokenDto));
     }
 
-    @ApiOperation(value = "kakao회원가입", notes = "id를 보내주세요")
-    @PostMapping("/kakaoSignUp")
-    public ResponseEntity<UserResponseDto> kakaoLogin(@RequestBody KakaoSignUpDto kakaoSignUpDto) {
-        return ResponseEntity.ok(authService.kakaoSignUp(kakaoSignUpDto));
+    @ApiOperation(value = "SNS회원가입", notes = "kakao의 id 혹은 apple의 email을 넣어주세요. id 또한 eamil에 넣어주시면 됩니다. type은 KAKAO, APPLE 에서 골라주세요")
+    @PostMapping("/kakao-signup")
+    public ResponseEntity<StateDto> kakaoLogin(@RequestBody SnsSignUpDto snsSignUpDto) {
+        return ResponseEntity.ok(authService.snsSignUp(snsSignUpDto));
     }
 
     @ApiOperation(value = "이메일중복체크", notes = "중복이면 false, 중복이 아니면 true를 보내드려요")
     @GetMapping("/check-email")
-    public ResponseEntity<Boolean> checkDuplicatedEmail(@RequestParam(name = "email") String email) {
+    public ResponseEntity<StateDto> checkDuplicatedEmail(@RequestParam(name = "email") String email) {
         return ResponseEntity.ok(authService.checkDuplicatedEmail(email));
     }
 
+    @ApiOperation(value = "SNS로그인",notes = "kakao의 id 혹은 apple의 email을 넣어주세요. kakao id 또한 eamil에 넣어주시면 됩니다. type은 KAKAO, APPLE 에서 골라주세요")
+    @PostMapping("/sns-login")
+    public ResponseEntity<TokenDto> snsLogin(@RequestBody SnsLoginDto snsLoginDto){
+        return ResponseEntity.ok(authService.snsLogin(snsLoginDto));
+    }
 
 }

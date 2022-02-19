@@ -4,5 +4,5 @@ import lombok.Getter;
 
 
 public enum ProviderType {
-    KAKAO,EMAIL;
+    KAKAO,EMAIL,APPLE;
 }

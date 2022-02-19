@@ -23,42 +23,29 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional(readOnly = true)
-    public boolean checkDuplicatedEmail(String email) {
-        return !userRepository.existsByEmail(email);
+    public StateDto checkDuplicatedEmail(String email) {
+        return StateDto.builder()
+                .state(!userRepository.existsByEmail(email)).build();
     }
 
     @Transactional
     public TokenDto login(LoginDto loginDto) {
-        if (userRepository.findByEmail(loginDto.getEmail()).orElse(null) == null) {
+        if (!userRepository.existsByEmail(loginDto.getEmail())) {
             throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
         }
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication(); // ID/PW로 AuthenticationToken 생성
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken); // 사용자 비밀번호 체크, CustomUserDetailsService에서의 loadUserByUsername 메서드가 실행됨
-        SecurityContextHolder.getContext().setAuthentication(authentication);//securityContext에 저장
-
-        String email = authentication.getName();
-
-        TokenDto tokenDto = jwtTokenProvider.createToken(authentication);
-        RefreshToken refreshToken = RefreshToken.builder()
-                .userEmail(email)
-                .token(tokenDto.getRefreshToken())
-                .build();
-
-        tokenDto.updateId(queryRepository.findUserIdByUserEmail(email));
-        refreshTokenRepository.save(refreshToken);
-        return tokenDto;
-
+        return createToken(authenticationToken);
     }
 
     @Transactional
-    public UserResponseDto signUp(SignUpDto signUpDto) {
+    public StateDto signUp(SignUpDto signUpDto) {
         if (userRepository.existsByNickname(signUpDto.getNickname())) {
             throw new RuntimeException("이미 있는 닉네임입니다");
         }
 
         User user = User.toUser(signUpDto, Authority.ROLE_USER, passwordEncoder);
-
-        return UserResponseDto.of(userRepository.save(user));
+        userRepository.save(user);
+        return StateDto.builder().state(true).build();
     }
 
     @Transactional
@@ -84,28 +71,55 @@ public class AuthService {
 
         // 5. 새로운 토큰 생성
         TokenDto newTokenDto = jwtTokenProvider.createToken(authentication);
+        newTokenDto.updateId(tokenDto.getUserId());
 
         // 6. 저장소 정보 업데이트
-        refreshToken.update(tokenDto.getRefreshToken());
+        refreshToken.update(newTokenDto.getRefreshToken());
 
         // 토큰 발급
-        return tokenDto;
+        return newTokenDto;
     }
 
 
     @Transactional
-    public UserResponseDto kakaoSignUp(KakaoSignUpDto kakaoSignUpDto) {
-        if (userRepository.existsByNickname(kakaoSignUpDto.getNickname())) {
+    public StateDto snsSignUp(SnsSignUpDto snsSignUpDto) {
+        if (userRepository.existsByNickname(snsSignUpDto.getNickname())) {
             throw new RuntimeException("이미 있는 닉네임입니다");
         }
 
-        User user = User.toUser(kakaoSignUpDto, Authority.ROLE_USER, passwordEncoder);
-        return UserResponseDto.of(userRepository.save(user));
+        User user = User.toUser(snsSignUpDto, Authority.ROLE_USER, passwordEncoder);
+        userRepository.save(user);
+        return StateDto.builder().state(true).build();
     }
 
     @Transactional
-    public void kakaoLogin(String email){
-        
+    public TokenDto snsLogin(SnsLoginDto snsLoginDto) {
+        if (snsLoginDto.getType() == ProviderType.KAKAO && !userRepository.existsByEmail(snsLoginDto.getEmail() + "@kakao.com")) {
+            throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
+        } else if (snsLoginDto.getType() == ProviderType.APPLE && !userRepository.existsByEmail(snsLoginDto.getEmail())) {
+            throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
+        }
+        UsernamePasswordAuthenticationToken authenticationToken = snsLoginDto.toAuthentication(); // ID/PW로 AuthenticationToken 생성
+        return createToken(authenticationToken);
     }
+
+    @Transactional
+    public TokenDto createToken(UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuthenticationToken);// 사용자 비밀번호 체크, CustomUserDetailsService에서의 loadUserByUsername 메서드가 실행됨
+        SecurityContextHolder.getContext().setAuthentication(authentication);//securityContext에 저장
+
+        String email = authentication.getName();
+
+        TokenDto tokenDto = jwtTokenProvider.createToken(authentication);
+        RefreshToken refreshToken = RefreshToken.builder()
+                .userEmail(email)
+                .token(tokenDto.getRefreshToken())
+                .build();
+
+        tokenDto.updateId(queryRepository.findUserIdByUserEmail(email));
+        refreshTokenRepository.save(refreshToken);
+        return tokenDto;
+    }
+
 
 }

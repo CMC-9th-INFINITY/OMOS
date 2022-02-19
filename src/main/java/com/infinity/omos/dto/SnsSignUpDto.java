@@ -1,6 +1,7 @@
 package com.infinity.omos.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.infinity.omos.domain.ProviderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,19 +13,16 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Builder
 @NoArgsConstructor
-public class KakaoSignUpDto {
+public class SnsSignUpDto {
 
     @NotNull
-    private String id;
+    private String email;
 
     @NotNull
     private String nickname;
 
-    public SignUpDto to(String id, String nickname){
-        return SignUpDto.builder()
-                .email(id)
-                .password(id)
-                .nickname(nickname)
-                .build();
-    }
+    @NotNull
+    private ProviderType type;
+
+
 }

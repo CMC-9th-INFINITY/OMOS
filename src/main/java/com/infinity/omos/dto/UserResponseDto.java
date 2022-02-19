@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponseDto {
-    private String email;
+    private Long userId;
 
     public static UserResponseDto of(User user) {
-        return new UserResponseDto(user.getEmail());
+        return new UserResponseDto(user.getId());
     }
 
 }

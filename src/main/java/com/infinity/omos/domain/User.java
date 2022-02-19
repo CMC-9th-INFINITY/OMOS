@@ -1,6 +1,6 @@
 package com.infinity.omos.domain;
 
-import com.infinity.omos.dto.KakaoSignUpDto;
+import com.infinity.omos.dto.SnsSignUpDto;
 import com.infinity.omos.dto.SignUpDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,13 +46,25 @@ public class User {
                 .build();
     }
 
-    public static User toUser(KakaoSignUpDto kakaoSignUpDto, Authority authority, PasswordEncoder passwordEncoder ){
-        return User.builder()
-                .email(kakaoSignUpDto.getId())
-                .password(passwordEncoder.encode(kakaoSignUpDto.getId()))
-                .nickname(kakaoSignUpDto.getNickname())
-                .authority(authority)
-                .build();
-    }
+    public static User toUser(SnsSignUpDto snsSignUpDto, Authority authority, PasswordEncoder passwordEncoder) {
+        if (snsSignUpDto.getType() == ProviderType.KAKAO) {
+            return User.builder()
+                    .email(snsSignUpDto.getEmail() + "@kakao.com")
+                    .password(passwordEncoder.encode(snsSignUpDto.getEmail()))
+                    .nickname(snsSignUpDto.getNickname())
+                    .authority(authority)
+                    .build();
+        } else if (snsSignUpDto.getType() == ProviderType.APPLE) {
+            return User.builder()
+                    .email(snsSignUpDto.getEmail())
+                    .password(passwordEncoder.encode(snsSignUpDto.getEmail()))
+                    .nickname(snsSignUpDto.getNickname())
+                    .authority(authority)
+                    .build();
+        }else {
+            throw new RuntimeException("type을 다시 확인해주세요");
+        }
 
+    }
 }
+
