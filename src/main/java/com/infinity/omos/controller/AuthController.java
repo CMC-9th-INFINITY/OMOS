@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @ApiOperation(value = "SNS회원가입", notes = "kakao의 id 혹은 apple의 email을 넣어주세요. id 또한 eamil에 넣어주시면 됩니다. type은 KAKAO, APPLE 에서 골라주세요")
-    @PostMapping("/kakao-signup")
+    @PostMapping("/sns-signup")
     public ResponseEntity<StateDto> kakaoLogin(@RequestBody SnsSignUpDto snsSignUpDto) {
         return ResponseEntity.ok(authService.snsSignUp(snsSignUpDto));
     }
