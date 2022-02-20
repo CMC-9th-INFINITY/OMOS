@@ -23,12 +23,7 @@ public class SnsLoginDto {
     private ProviderType type;
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        if (type == ProviderType.KAKAO) {
-            return new UsernamePasswordAuthenticationToken(email+ "@kakao.com", email);
-        } else if (type == ProviderType.APPLE) {
-            return new UsernamePasswordAuthenticationToken(email, email);
-        }
-        return null;
+        return new UsernamePasswordAuthenticationToken(email, email);
     }
 
 }

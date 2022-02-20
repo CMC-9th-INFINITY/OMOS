@@ -1,7 +1,7 @@
 package com.infinity.omos.domain;
 
-import com.infinity.omos.dto.SnsSignUpDto;
 import com.infinity.omos.dto.SignUpDto;
+import com.infinity.omos.dto.SnsSignUpDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,23 +47,12 @@ public class User {
     }
 
     public static User toUser(SnsSignUpDto snsSignUpDto, Authority authority, PasswordEncoder passwordEncoder) {
-        if (snsSignUpDto.getType() == ProviderType.KAKAO) {
-            return User.builder()
-                    .email(snsSignUpDto.getEmail() + "@kakao.com")
-                    .password(passwordEncoder.encode(snsSignUpDto.getEmail()))
-                    .nickname(snsSignUpDto.getNickname())
-                    .authority(authority)
-                    .build();
-        } else if (snsSignUpDto.getType() == ProviderType.APPLE) {
-            return User.builder()
+         return User.builder()
                     .email(snsSignUpDto.getEmail())
                     .password(passwordEncoder.encode(snsSignUpDto.getEmail()))
                     .nickname(snsSignUpDto.getNickname())
                     .authority(authority)
                     .build();
-        }else {
-            throw new RuntimeException("type을 다시 확인해주세요");
-        }
 
     }
 }

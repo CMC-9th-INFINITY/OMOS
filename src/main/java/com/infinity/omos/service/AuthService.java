@@ -86,6 +86,9 @@ public class AuthService {
         if (userRepository.existsByNickname(snsSignUpDto.getNickname())) {
             throw new RuntimeException("이미 있는 닉네임입니다");
         }
+        if (snsSignUpDto.getType() == ProviderType.KAKAO && !snsSignUpDto.getEmail().contains("@kakao.com")){
+            throw new RuntimeException("카카오 아이디 형식을 확인해주세요");
+        }
 
         User user = User.toUser(snsSignUpDto, Authority.ROLE_USER, passwordEncoder);
         userRepository.save(user);
@@ -96,11 +99,10 @@ public class AuthService {
                 .build());
     }
 
+
     @Transactional
     public TokenDto snsLogin(SnsLoginDto snsLoginDto) {
-        if (snsLoginDto.getType() == ProviderType.KAKAO && !userRepository.existsByEmail(snsLoginDto.getEmail() + "@kakao.com")) {
-            throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
-        } else if (snsLoginDto.getType() == ProviderType.APPLE && !userRepository.existsByEmail(snsLoginDto.getEmail())) {
+        if (!userRepository.existsByEmail(snsLoginDto.getEmail())) {
             throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
         }
         UsernamePasswordAuthenticationToken authenticationToken = snsLoginDto.toAuthentication(); // ID/PW로 AuthenticationToken 생성

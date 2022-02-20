@@ -5,6 +5,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 **/application.properties
+**/application-oauth.properties
+**/application-real.properties
 ### STS ###
 .apt_generated
 .classpath

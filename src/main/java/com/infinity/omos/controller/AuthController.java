@@ -46,6 +46,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.checkDuplicatedEmail(email));
     }
 
+
     @ApiOperation(value = "SNS로그인",notes = "kakao의 id 혹은 apple의 email을 넣어주세요. kakao id 또한 eamil에 넣어주시면 됩니다. type은 KAKAO, APPLE 에서 골라주세요")
     @PostMapping("/sns-login")
     public ResponseEntity<TokenDto> snsLogin(@RequestBody SnsLoginDto snsLoginDto){
