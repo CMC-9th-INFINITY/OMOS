@@ -27,7 +27,8 @@ public class Posts extends BaseTimeEntity{
     private Music musicId;
 
     @Column(nullable = false)
-    private Long categoryId;
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @Column(nullable = false)
     private boolean publicOrNot;
