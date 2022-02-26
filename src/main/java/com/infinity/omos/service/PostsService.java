@@ -5,7 +5,6 @@ import com.infinity.omos.api.SpotifyApiAuthorization;
 import com.infinity.omos.domain.*;
 import com.infinity.omos.domain.Posts.Posts;
 import com.infinity.omos.domain.Posts.PostsRepository;
-import com.infinity.omos.domain.Posts.PostsRepositoryImpl;
 import com.infinity.omos.dto.AlbumsDto;
 import com.infinity.omos.dto.MusicDto;
 import com.infinity.omos.dto.PostsDetailResponseDto;
@@ -31,7 +30,8 @@ public class PostsService {
     private final LikeRepository likeRepository;
     private final ScrapRepository scrapRepository;
     private final SpotifyApiAuthorization spotifyApiAuthorization;
-    private final PostsRepositoryImpl postsRepositoryImpl;
+    private final UserRepository userRepository;
+
 
     @Transactional(readOnly = true)
     public HashMap<Category, List<PostsResponseDto>> selectRecordsMatchingAllCategory() {
@@ -75,14 +75,14 @@ public class PostsService {
     }
 
     @Transactional
-    public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, Pageable pageable) {
+    public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, Pageable pageable, Long userId) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
         List<PostsDetailResponseDto> postsDetailResponseDtos = new ArrayList<>();
         Page<Posts> posts = postsRepository.findAllByCategory(category, pageable);
         for (Posts post : posts) {
             AlbumsDto albumsDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
-            User user = post.getUserId();
+            User user = userRepository.getById(userId);
             postsDetailResponseDtos.add(
                     PostsDetailResponseDto.builder()
                             .createdDate(post.getCreatedDate())
@@ -90,7 +90,7 @@ public class PostsService {
                             .recordContents(post.getContents())
                             .recordId(post.getId())
                             .viewsCnt(post.getCnt())
-                            .userId(user.getId())
+                            .userId(userId)
                             .nickname(user.getNickname())
                             .isLiked(likeRepository.existsByUserId(user))
                             .isScraped(scrapRepository.existsByUserId(user))
