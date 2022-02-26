@@ -2,6 +2,8 @@ package com.infinity.omos.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 @Builder
@@ -9,11 +11,10 @@ import lombok.*;
 @Setter
 public class MusicDto {
     private String musicId;
-    private String artistId;
     private String musicTitle;
-    private String artistName;
+    private List<Artists> artists;
     private String albumTitle;
     private String albumImageUrl;
-
+    //노래제목, 가수이름, 앨범제목, 노래아이디,
 
 }

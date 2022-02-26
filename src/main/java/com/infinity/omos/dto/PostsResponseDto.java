@@ -14,16 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 public class PostsResponseDto {
 
-    private String musicId;
-    private String musicTitle;
-    private List<Artists> artists;
-    private String albumTitle;
+    private MusicDto music;
     private String recordTitle;
     private Long userId;
     private String nickname;
     private Long recordId;
 
-
+//노래제목, 가수이름, 앨범제목, 노래아이디, 레코드제목, 레코드날짜, 레코드 내용, 레코드닉네임, 내가 하트 눌렀는지, 내가 스크랩 눌렀는지, 하트는 몇개인지, 별은 몇개인지
 
 
 }

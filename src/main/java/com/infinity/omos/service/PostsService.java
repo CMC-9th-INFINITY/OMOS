@@ -2,14 +2,17 @@ package com.infinity.omos.service;
 
 import com.infinity.omos.api.SpotifyAllSearchApi;
 import com.infinity.omos.api.SpotifyApiAuthorization;
-import com.infinity.omos.domain.Category;
-import com.infinity.omos.domain.Posts;
-import com.infinity.omos.domain.PostsRepository;
-import com.infinity.omos.domain.QueryRepository;
+import com.infinity.omos.domain.*;
+import com.infinity.omos.domain.Posts.Posts;
+import com.infinity.omos.domain.Posts.PostsRepository;
+import com.infinity.omos.domain.Posts.PostsRepositoryImpl;
 import com.infinity.omos.dto.AlbumsDto;
-import com.infinity.omos.dto.PostsMatchingCategoryDto;
+import com.infinity.omos.dto.MusicDto;
+import com.infinity.omos.dto.PostsDetailResponseDto;
 import com.infinity.omos.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -18,19 +21,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class PostsService {
 
     private final PostsRepository postsRepository;
     private final QueryRepository queryRepository;
+    private final LikeRepository likeRepository;
+    private final ScrapRepository scrapRepository;
     private final SpotifyApiAuthorization spotifyApiAuthorization;
+    private final PostsRepositoryImpl postsRepositoryImpl;
 
     @Transactional(readOnly = true)
-    public HashMap<Category,List<PostsResponseDto>> selectRecordsMatchingAllCategory() {
-        HashMap<Category,List<PostsResponseDto>> postsMatchingCategoryDtos = new HashMap<>();
+    public HashMap<Category, List<PostsResponseDto>> selectRecordsMatchingAllCategory() {
+        HashMap<Category, List<PostsResponseDto>> postsMatchingCategoryDtos = new HashMap<>();
         for (Category category : Category.values()) {
-            postsMatchingCategoryDtos.put(category,selectRecordsMatchingCategory(category, 5));
+            postsMatchingCategoryDtos.put(category, selectRecordsMatchingCategory(category, 5));
         }
 
         return postsMatchingCategoryDtos;
@@ -44,12 +51,17 @@ public class PostsService {
         List<PostsResponseDto> postsResponseDtos = new ArrayList<>();
         for (Posts post : posts) {
             AlbumsDto albumsDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+
             postsResponseDtos.add(
                     PostsResponseDto.builder()
-                            .albumTitle(albumsDto.getAlbumTitle())
-                            .artists(albumsDto.getArtists())
-                            .musicId(albumsDto.getMusicId())
-                            .musicTitle(albumsDto.getMusicTitle())
+                            .music(MusicDto.builder()
+                                    .musicId(albumsDto.getMusicId())
+                                    .musicTitle(albumsDto.getMusicTitle())
+                                    .albumImageUrl(albumsDto.getAlbumImageUrl())
+                                    .artists(albumsDto.getArtists())
+                                    .albumTitle(albumsDto.getAlbumTitle())
+                                    .build()
+                            )
                             .recordId(post.getId())
                             .recordTitle(post.getTitle())
                             .nickname(post.getUserId().getNickname())
@@ -60,6 +72,41 @@ public class PostsService {
         }
 
         return postsResponseDtos;
+    }
+
+    @Transactional
+    public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, Pageable pageable) {
+        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
+
+        List<PostsDetailResponseDto> postsDetailResponseDtos = new ArrayList<>();
+        Page<Posts> posts = postsRepository.findAllByCategory(category, pageable);
+        for (Posts post : posts) {
+            AlbumsDto albumsDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+            User user = post.getUserId();
+            postsDetailResponseDtos.add(
+                    PostsDetailResponseDto.builder()
+                            .createdDate(post.getCreatedDate())
+                            .recordTitle(post.getTitle())
+                            .recordContents(post.getContents())
+                            .recordId(post.getId())
+                            .viewsCnt(post.getCnt())
+                            .userId(user.getId())
+                            .nickname(user.getNickname())
+                            .isLiked(likeRepository.existsByUserId(user))
+                            .isScraped(scrapRepository.existsByUserId(user))
+                            .likeCnt(likeRepository.countByPostId(post))
+                            .scrapCnt(scrapRepository.countByPostId(post))
+                            .music(MusicDto.builder()
+                                    .musicId(albumsDto.getMusicId())
+                                    .musicTitle(albumsDto.getMusicTitle())
+                                    .albumImageUrl(albumsDto.getAlbumImageUrl())
+                                    .artists(albumsDto.getArtists())
+                                    .albumTitle(albumsDto.getAlbumTitle())
+                                    .build())
+                            .build()
+            );
+        }
+        return postsDetailResponseDtos;
     }
 
 }

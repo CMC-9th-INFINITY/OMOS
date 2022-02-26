@@ -1,5 +1,9 @@
-package com.infinity.omos.domain;
+package com.infinity.omos.domain.Posts;
 
+import com.infinity.omos.domain.BaseTimeEntity;
+import com.infinity.omos.domain.Category;
+import com.infinity.omos.domain.Music;
+import com.infinity.omos.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +16,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @NoArgsConstructor
-public class Posts extends BaseTimeEntity{
+public class Posts extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import com.infinity.omos.dto.AlbumsDto;
 import com.infinity.omos.dto.ArtistDto;
 import com.infinity.omos.dto.Artists;
-import com.infinity.omos.dto.MusicDto;
 
 import java.io.BufferedReader;
 import java.io.IOException;

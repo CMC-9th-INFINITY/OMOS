@@ -1,6 +1,7 @@
 package com.infinity.omos.domain;
 
 
+import com.infinity.omos.domain.Posts.Posts;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
