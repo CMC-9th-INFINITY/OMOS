@@ -1,10 +1,15 @@
 package com.infinity.omos.domain;
 
 
+import com.infinity.omos.dto.PostsResponseDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
 import static com.infinity.omos.domain.QUser.user;
+import static com.infinity.omos.domain.QPosts.posts;
 
 @RequiredArgsConstructor
 @Repository
@@ -19,5 +24,9 @@ public class QueryRepository {
      */
     public Long findUserIdByUserEmail(String email) {
         return queryFactory.select(user.id).from(user).where(user.email.eq(email)).fetchOne();
+    }
+
+    public List<Posts> findPostsByCategory(Category category, int size){
+        return queryFactory.selectFrom(posts).where(posts.category.eq(category),posts.publicOrNot.eq(true)).limit(size).orderBy(posts.createdDate.desc()).fetch();
     }
 }

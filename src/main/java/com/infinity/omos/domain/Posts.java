@@ -26,7 +26,7 @@ public class Posts extends BaseTimeEntity{
     @JoinColumn(name="music_id")
     private Music musicId;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "category_id")
     @Enumerated(EnumType.STRING)
     private Category category;
 

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Api(tags = {"회원가입 관련 API"})
-public class AuthController {
+@Api(tags = {"온보딩"})
+public class  AuthController {
     private final AuthService authService;
 
     @ApiOperation(value = "로그인", notes = "이메일 로그인입니다")

@@ -13,7 +13,7 @@ import java.util.Collection;
 @Entity
 @Builder
 @NoArgsConstructor
-public class Scrap {
+public class Scrap extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

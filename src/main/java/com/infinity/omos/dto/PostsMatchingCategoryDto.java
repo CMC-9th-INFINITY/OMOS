@@ -6,21 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 @Builder
 @NoArgsConstructor
-public class AllPostsResponseDto {
-
-    private Long musicId;
-    private String singTitle;
-    private String artist;
-    private String albumName;
-    private String recordTitle;
-    private String recordWriter;
-    private Long recordId;
-
-
-
+public class PostsMatchingCategoryDto {
+    private Category category;
+    private List<PostsResponseDto> postsResponseDtos;
 
 }
