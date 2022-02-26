@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.infinity.omos.domain.QPosts.posts;
+import static com.infinity.omos.domain.Posts.QPosts.posts;
 import static com.infinity.omos.domain.QUser.user;
 
 @RequiredArgsConstructor

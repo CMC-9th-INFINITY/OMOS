@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static com.infinity.omos.domain.QPosts.posts;
+import static com.infinity.omos.domain.Posts.QPosts.posts;
 
 @RequiredArgsConstructor
 public class PostsRepositoryImpl implements PostsRepositoryCustom {
