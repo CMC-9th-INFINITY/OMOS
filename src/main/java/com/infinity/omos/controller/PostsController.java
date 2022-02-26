@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,7 @@ public class PostsController {
 
     @ApiOperation(value = "전체레코드에서 상세보기", notes = "예를 들어 게시판이 있다고 생각하고 한 페이지마다 3개씩 글이 있고 3번째 페이지에 있는 글을 가져오고 싶다! 하면 page=3&size=3 이런식으로 하시면 됩니당! 이건 글을 불러올때 한번에 다 불러오는건 낭비니까 계속 조금씩 불러오는걸루 생각하시면 되고 실전에서 쓰실때는 size는 고정으로 page는 0부터 차근차근 높여가시면 될 듯 합니다!")
     @GetMapping("/select/category/{category}")
-    public ResponseEntity<List<PostsDetailResponseDto>> selectPostsMatchingCategory(@PathVariable("category") Category category, Long userId, Pageable pageable) {
+    public ResponseEntity<List<PostsDetailResponseDto>> selectPostsMatchingCategory(@PathVariable("category") Category category, @RequestParam("userid") Long userId, Pageable pageable) {
         System.out.println("dfd");
         return ResponseEntity.ok(postsService.selectRecordsByCategory(category, pageable, userId));
     }
