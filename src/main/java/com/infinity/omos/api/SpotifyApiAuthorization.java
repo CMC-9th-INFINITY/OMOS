@@ -39,7 +39,6 @@ public class SpotifyApiAuthorization {
 
     public SpotifyApi clientCredentials_Sync() {
         try {
-            System.out.println(clientId);
             spotifyApi = new SpotifyApi.Builder()
                     .setClientId(clientId)
                     .setClientSecret(clientSecret)

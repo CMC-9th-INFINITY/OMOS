@@ -67,7 +67,7 @@ public class SpotifyAllSearchApi {
                 JsonObject album = items.get(i).getAsJsonObject().get("album").getAsJsonObject();
                 JsonArray artists = album.get("artists").getAsJsonArray();
                 List<Artists> artists1 = new ArrayList<>();
-                for (int j=0;j<artists.size();j++){
+                for (int j = 0; j < artists.size(); j++) {
                     Artists artists2 = new Artists();
                     artists2.setArtistName(artists.get(j).getAsJsonObject().get("name").getAsString());
                     artists2.setArtistId(artists.get(j).getAsJsonObject().get("id").getAsString());
@@ -86,7 +86,6 @@ public class SpotifyAllSearchApi {
                 albumsDto.setMusicId(items.get(i).getAsJsonObject().get("id").getAsString());
                 albumsDto.setMusicTitle(items.get(i).getAsJsonObject().get("name").getAsString());
                 albumsDtos.add(albumsDto);
-
 
 
             }
@@ -159,7 +158,6 @@ public class SpotifyAllSearchApi {
                 artistDtos.add(artistDto);
 
 
-
             }
             br.close();
         } catch (IOException e) {
@@ -173,7 +171,7 @@ public class SpotifyAllSearchApi {
     public static AlbumsDto getTrackApi(String accessToken, String id) {
         AlbumsDto albumsDto = new AlbumsDto();
 
-        String reqURL = "https://api.spotify.com/v1/tracks/" + id+"?market=KR"+"&locale=ko-KR%2Cko%3Bq%3D0.9%2Cen-US%3Bq%3D0.8%2Cen%3Bq%3D0.7";
+        String reqURL = "https://api.spotify.com/v1/tracks/" + id + "?market=KR" + "&locale=ko-KR%2Cko%3Bq%3D0.9%2Cen-US%3Bq%3D0.8%2Cen%3Bq%3D0.7";
 
         try {
             URL url = new URL(reqURL);
@@ -203,7 +201,6 @@ public class SpotifyAllSearchApi {
             //Gson 라이브러리로 JSON파싱
 
 
-
             JsonElement element = JsonParser.parseString(result.toString());
             JsonObject object = element.getAsJsonObject();
 
@@ -215,7 +212,7 @@ public class SpotifyAllSearchApi {
 
             JsonArray artists = object.get("artists").getAsJsonArray();
             List<Artists> artists1 = new ArrayList<>();
-            for (int j=0;j<artists.size();j++){
+            for (int j = 0; j < artists.size(); j++) {
                 Artists artists2 = new Artists();
                 artists2.setArtistName(artists.get(j).getAsJsonObject().get("name").getAsString());
                 artists2.setArtistId(artists.get(j).getAsJsonObject().get("id").getAsString());
@@ -228,7 +225,7 @@ public class SpotifyAllSearchApi {
 
             br.close();
         } catch (IOException e) {
-            throw new RuntimeException("Error: spotifyAPI오류 "+ e.getMessage() );
+            throw new RuntimeException("Error: spotifyAPI오류 " + e.getMessage());
         }
 
         return albumsDto;
