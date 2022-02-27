@@ -22,11 +22,11 @@ public class Posts extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User userId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="music_id")
     private Music musicId;
 
@@ -35,7 +35,7 @@ public class Posts extends BaseTimeEntity {
     private Category category;
 
     @Column(nullable = false,name="is_public")
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @Column(nullable = false)
     private String title;
@@ -45,7 +45,9 @@ public class Posts extends BaseTimeEntity {
 
     private int cnt;
 
-
+    public int updateCnt(){
+        return ++cnt;
+    }
 
 
 }

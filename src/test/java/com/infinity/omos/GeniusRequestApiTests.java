@@ -4,6 +4,7 @@ import com.infinity.omos.api.RequestGeniusApi;
 import com.infinity.omos.api.SpotifyAllSearchApi;
 import com.infinity.omos.api.SpotifyApiAuthorization;
 import com.infinity.omos.dto.AlbumDto;
+import com.infinity.omos.dto.AlbumTrackDto;
 import com.infinity.omos.dto.TrackDto;
 import com.infinity.omos.service.AuthService;
 import org.junit.jupiter.api.Test;
@@ -36,16 +37,16 @@ public class GeniusRequestApiTests {
     @Test
     public void ApiTests() {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-        TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(),"5xrtzzzikpG3BLbo4q1Yul");
-        System.out.println(trackDto.getMusicTitle());
-        System.out.println(trackDto.getArtists());
+        List<AlbumTrackDto> albumTrackDtos = SpotifyAllSearchApi.getAlbumTrackApi(spotifyApi.getAccessToken(),"01dPJcwyht77brL4JQiR8R");
+        System.out.println(albumTrackDtos.get(1).getMusicTitle());
+        //System.out.println(trackDto.getArtists());
 
     }
 
     @Test
     public void test() {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-        List<AlbumDto> trackDtos = SpotifyAllSearchApi.spotifyAlbumSearchApi(spotifyApi.getAccessToken(),"샴푸");
+        List<AlbumDto> trackDtos = SpotifyAllSearchApi.spotifyAlbumSearchApi(spotifyApi.getAccessToken(),"샴푸",0,10);
   //      for(AlbumDto trackDto : trackDtos){
 //            System.out.println(trackDto.getMusicTitle());
 

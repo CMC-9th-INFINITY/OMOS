@@ -5,10 +5,7 @@ import com.infinity.omos.api.SpotifyApiAuthorization;
 import com.infinity.omos.domain.*;
 import com.infinity.omos.domain.Posts.Posts;
 import com.infinity.omos.domain.Posts.PostsRepository;
-import com.infinity.omos.dto.TrackDto;
-import com.infinity.omos.dto.MusicDto;
-import com.infinity.omos.dto.PostsDetailResponseDto;
-import com.infinity.omos.dto.PostsResponseDto;
+import com.infinity.omos.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +28,7 @@ public class PostsService {
     private final ScrapRepository scrapRepository;
     private final SpotifyApiAuthorization spotifyApiAuthorization;
     private final UserRepository userRepository;
+    private final MusicRepository musicRepository;
 
 
     @Transactional(readOnly = true)
@@ -110,8 +108,22 @@ public class PostsService {
     }
 
     @Transactional
-    public void save(){
+    public HashMap<String, Long> save(PostsRequestDto requestDto) {
+        if (!musicRepository.existsById(requestDto.getMusicId())) {
+            musicRepository.save(Music.builder().id(requestDto.getMusicId()).build());
+        }
 
+        HashMap<String, Long> postId = new HashMap<>();
+        Posts posts = requestDto.toPosts(musicRepository.getById(requestDto.getMusicId()), userRepository.getById(requestDto.getUserId()));
+        postId.put("postId", postsRepository.save(posts).getId());
+        return postId;
+    }
+
+    @Transactional
+    public StateDto plusViewsCnt(Long postsId) {
+        Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
+        posts.updateCnt();
+        return StateDto.builder().state(true).build();
     }
 
 }

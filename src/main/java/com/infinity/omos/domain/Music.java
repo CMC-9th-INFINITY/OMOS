@@ -19,6 +19,6 @@ public class Music extends BaseTimeEntity{
     @Column(nullable = false)
     private String id;
 
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private String artistId;
 }
