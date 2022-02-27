@@ -5,7 +5,7 @@ import com.infinity.omos.api.SpotifyApiAuthorization;
 import com.infinity.omos.domain.*;
 import com.infinity.omos.domain.Posts.Posts;
 import com.infinity.omos.domain.Posts.PostsRepository;
-import com.infinity.omos.dto.AlbumsDto;
+import com.infinity.omos.dto.TrackDto;
 import com.infinity.omos.dto.MusicDto;
 import com.infinity.omos.dto.PostsDetailResponseDto;
 import com.infinity.omos.dto.PostsResponseDto;
@@ -50,16 +50,16 @@ public class PostsService {
         List<Posts> posts = queryRepository.findPostsByCategory(category, size);
         List<PostsResponseDto> postsResponseDtos = new ArrayList<>();
         for (Posts post : posts) {
-            AlbumsDto albumsDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+            TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
 
             postsResponseDtos.add(
                     PostsResponseDto.builder()
                             .music(MusicDto.builder()
-                                    .musicId(albumsDto.getMusicId())
-                                    .musicTitle(albumsDto.getMusicTitle())
-                                    .albumImageUrl(albumsDto.getAlbumImageUrl())
-                                    .artists(albumsDto.getArtists())
-                                    .albumTitle(albumsDto.getAlbumTitle())
+                                    .musicId(trackDto.getMusicId())
+                                    .musicTitle(trackDto.getMusicTitle())
+                                    .albumImageUrl(trackDto.getAlbumImageUrl())
+                                    .artists(trackDto.getArtists())
+                                    .albumTitle(trackDto.getAlbumTitle())
                                     .build()
                             )
                             .recordId(post.getId())
@@ -74,14 +74,14 @@ public class PostsService {
         return postsResponseDtos;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, Pageable pageable, Long userId) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
         List<PostsDetailResponseDto> postsDetailResponseDtos = new ArrayList<>();
         Page<Posts> posts = postsRepository.findAllByCategory(category, pageable);
         for (Posts post : posts) {
-            AlbumsDto albumsDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+            TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
             User user = userRepository.getById(userId);
             postsDetailResponseDtos.add(
                     PostsDetailResponseDto.builder()
@@ -97,16 +97,21 @@ public class PostsService {
                             .likeCnt(likeRepository.countByPostId(post))
                             .scrapCnt(scrapRepository.countByPostId(post))
                             .music(MusicDto.builder()
-                                    .musicId(albumsDto.getMusicId())
-                                    .musicTitle(albumsDto.getMusicTitle())
-                                    .albumImageUrl(albumsDto.getAlbumImageUrl())
-                                    .artists(albumsDto.getArtists())
-                                    .albumTitle(albumsDto.getAlbumTitle())
+                                    .musicId(trackDto.getMusicId())
+                                    .musicTitle(trackDto.getMusicTitle())
+                                    .albumImageUrl(trackDto.getAlbumImageUrl())
+                                    .artists(trackDto.getArtists())
+                                    .albumTitle(trackDto.getAlbumTitle())
                                     .build())
                             .build()
             );
         }
         return postsDetailResponseDtos;
+    }
+
+    @Transactional
+    public void save(){
+
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @Setter
-public class AlbumsDto {
+public class TrackDto {
     private String musicId;
     private String musicTitle;
     private List<Artists> artists;

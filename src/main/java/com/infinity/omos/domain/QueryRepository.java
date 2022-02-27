@@ -27,7 +27,7 @@ public class QueryRepository {
     }
 
     public List<Posts> findPostsByCategory(Category category, int size){
-        return queryFactory.selectFrom(posts).where(posts.category.eq(category),posts.publicOrNot.eq(true)).limit(size).orderBy(posts.createdDate.desc()).fetch();
+        return queryFactory.selectFrom(posts).where(posts.category.eq(category),posts.isPublic.eq(true)).limit(size).orderBy(posts.createdDate.desc()).fetch();
     }
 
 

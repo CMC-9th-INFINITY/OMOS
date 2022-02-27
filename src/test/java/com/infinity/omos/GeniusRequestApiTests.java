@@ -3,7 +3,8 @@ package com.infinity.omos;
 import com.infinity.omos.api.RequestGeniusApi;
 import com.infinity.omos.api.SpotifyAllSearchApi;
 import com.infinity.omos.api.SpotifyApiAuthorization;
-import com.infinity.omos.dto.AlbumsDto;
+import com.infinity.omos.dto.AlbumDto;
+import com.infinity.omos.dto.TrackDto;
 import com.infinity.omos.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +36,20 @@ public class GeniusRequestApiTests {
     @Test
     public void ApiTests() {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-        AlbumsDto albumsDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(),"5xrtzzzikpG3BLbo4q1Yul");
-        System.out.println(albumsDto.getMusicTitle());
-        System.out.println(albumsDto.getArtists());
+        TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(),"5xrtzzzikpG3BLbo4q1Yul");
+        System.out.println(trackDto.getMusicTitle());
+        System.out.println(trackDto.getArtists());
 
     }
 
     @Test
     public void test() {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-        List<AlbumsDto> albumsDtos = SpotifyAllSearchApi.spotifyTrackSearchApi(spotifyApi.getAccessToken(),"샴푸");
-        for(AlbumsDto albumsDto : albumsDtos){
-            System.out.println(albumsDto.getMusicTitle());
+        List<AlbumDto> trackDtos = SpotifyAllSearchApi.spotifyAlbumSearchApi(spotifyApi.getAccessToken(),"샴푸");
+  //      for(AlbumDto trackDto : trackDtos){
+//            System.out.println(trackDto.getMusicTitle());
 
-        }
+    //    }
     }
 }
 

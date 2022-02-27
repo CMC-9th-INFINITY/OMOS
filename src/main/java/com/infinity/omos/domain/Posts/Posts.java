@@ -34,8 +34,8 @@ public class Posts extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @Column(nullable = false)
-    private boolean publicOrNot;
+    @Column(nullable = false,name="is_public")
+    private boolean isPublic;
 
     @Column(nullable = false)
     private String title;
