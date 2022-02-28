@@ -1,10 +1,7 @@
 package com.infinity.omos.controller;
 
 import com.infinity.omos.domain.Category;
-import com.infinity.omos.dto.PostsDetailResponseDto;
-import com.infinity.omos.dto.PostsRequestDto;
-import com.infinity.omos.dto.PostsResponseDto;
-import com.infinity.omos.dto.StateDto;
+import com.infinity.omos.dto.*;
 import com.infinity.omos.service.PostsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,10 +41,21 @@ public class PostsController {
 
     @ApiOperation(value = "레코드 조회수 상승", notes = "return값으로 레코드 업데이트된 조회수 필요하거나 암튼 리턴값 필요하신거있으시면 말씀해주세요! 지금은 딱히 필요한거 있는지 몰라서 나뒀어요")
     @GetMapping("/{postId}")
-    public ResponseEntity<StateDto> plusViews(@PathVariable("postId") Long postId){
+    public ResponseEntity<StateDto> plusViews(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postsService.plusViewsCnt(postId));
     }
 
+    @ApiOperation(value = "MY레코드 전체 불러오기", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<MyRecordDto>> selectMyPosts(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(postsService.selectMyPosts(userId));
+    }
+
+    @ApiOperation(value = "My레코드 상세보기")
+    @GetMapping("/{userId}/{postId}")
+    public ResponseEntity<PostsDetailResponseDto> selectMyPost(@PathVariable("userId") Long userId, @PathVariable("postId") Long postId) {
+        return ResponseEntity.ok(postsService.selectMyPost(postId,userId));
+    }
 
 
 }

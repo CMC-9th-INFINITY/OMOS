@@ -30,6 +30,10 @@ public class QueryRepository {
         return queryFactory.selectFrom(posts).where(posts.category.eq(category),posts.isPublic.eq(true)).limit(size).orderBy(posts.createdDate.desc()).fetch();
     }
 
+    public List<Posts> findPostsByUserId(User userId){
+        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId)).fetch();
+    }
+
 
 
 

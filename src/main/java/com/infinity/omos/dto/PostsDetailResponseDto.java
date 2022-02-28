@@ -1,9 +1,8 @@
 package com.infinity.omos.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.infinity.omos.domain.Category;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @NoArgsConstructor
+@Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostsDetailResponseDto {
     //노래제목, 가수이름, 앨범제목, 노래아이디, 레코드제목, 레코드날짜, 레코드 내용, 레코드닉네임, 내가 하트 눌렀는지, 내가 스크랩 눌렀는지, 하트는 몇개인지, 별은 몇개인지
     private MusicDto music;
@@ -19,6 +20,8 @@ public class PostsDetailResponseDto {
     private String recordTitle;
     private String recordContents;
     private LocalDateTime createdDate;
+    private Category category;
+
     private int viewsCnt;
 
     private Long userId;
@@ -29,8 +32,10 @@ public class PostsDetailResponseDto {
     private int likeCnt;
     private int scrapCnt;
 
-    private boolean isLiked;
-    private boolean isScraped;
+    private Boolean isLiked;
+    private Boolean isScraped;
+
+    private Boolean isPublic;
 
 
 
