@@ -23,18 +23,18 @@ public class Posts extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="music_id")
+    @JoinColumn(name = "music_id")
     private Music musicId;
 
-    @Column(nullable = false,name = "category_id")
+    @Column(nullable = false, name = "category_id")
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @Column(nullable = false,name="is_public")
+    @Column(nullable = false, name = "is_public")
     private Boolean isPublic;
 
     @Column(nullable = false)
@@ -45,9 +45,17 @@ public class Posts extends BaseTimeEntity {
 
     private int cnt;
 
-    public int updateCnt(){
-        return ++cnt;
+    public void updateCnt() {
+        ++cnt;
     }
 
+    public void updatePublic() {
+        this.isPublic = !this.isPublic;
+    }
+
+    public void updatePosts(String title, String contents){
+        this.title = title;
+        this.contents = contents;
+    }
 
 }

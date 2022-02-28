@@ -40,7 +40,7 @@ public class PostsController {
     }
 
     @ApiOperation(value = "레코드 조회수 상승", notes = "return값으로 레코드 업데이트된 조회수 필요하거나 암튼 리턴값 필요하신거있으시면 말씀해주세요! 지금은 딱히 필요한거 있는지 몰라서 나뒀어요")
-    @GetMapping("/{postId}")
+    @PutMapping("/{postId}")
     public ResponseEntity<StateDto> plusViews(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postsService.plusViewsCnt(postId));
     }
@@ -54,7 +54,25 @@ public class PostsController {
     @ApiOperation(value = "My레코드 상세보기")
     @GetMapping("/{userId}/{postId}")
     public ResponseEntity<PostsDetailResponseDto> selectMyPost(@PathVariable("userId") Long userId, @PathVariable("postId") Long postId) {
-        return ResponseEntity.ok(postsService.selectMyPost(postId,userId));
+        return ResponseEntity.ok(postsService.selectMyPost(postId, userId));
+    }
+
+    @ApiOperation(value = "레코드 비공개 공개 활성화", notes = "비공개였으면 공개, 공개였으면 비공개로 전환됩니다.")
+    @PutMapping("/{postId}/ispulic")
+    public ResponseEntity<StateDto> setPublic(@PathVariable("postId") Long postId) {
+        return ResponseEntity.ok(postsService.setPublic(postId));
+    }
+
+    @ApiOperation(value = "레코드 수정", notes = "제목,내용 둘 다 보내주세요")
+    @PutMapping("/update/{postId}")
+    public ResponseEntity<HashMap<String, Long>> updatePosts(@PathVariable("postId") Long postId, @RequestBody PostsUpdateDto postsUpdateDto) {
+        return ResponseEntity.ok(postsService.update(postId, postsUpdateDto));
+    }
+
+    @ApiOperation(value = "레코드 삭제")
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<StateDto> deletePosts(@PathVariable("postId") Long postId){
+        return ResponseEntity.ok(postsService.delete(postId));
     }
 
 

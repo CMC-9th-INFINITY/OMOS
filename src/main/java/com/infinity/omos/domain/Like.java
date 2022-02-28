@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
@@ -15,18 +16,22 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @Table(name = "like_num")
-public class Like extends BaseTimeEntity{
+public class Like extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
+    @NotNull
     private User userId;
 
     @ManyToOne
-    @JoinColumn(name="post_id")
+    @JoinColumn(name = "post_id")
+    @NotNull
     private Posts postId;
+
+
 
 }
