@@ -27,7 +27,7 @@ public class SearchController {
     private final SpotifyApiAuthorization spotifyApiAuthorization;
 
     @ApiOperation(value = "앨범검색API", notes = "limit은 한번에 불러올 데이터 개수, offset은 0부터 시작이고 페이지*limit 이라고 보시면 됩니당. 즉, 내가 보는 페이지에서 첫번째 게시글의 인덱스...?  \n 예를들어 limit이 5이고 2번째 페이지를 보고 싶으면 offset은 10, limit이 3이고 0번째 페이지를 보고 싶으시면 offset은 0")
-    @GetMapping("/ablum")
+    @GetMapping("/album")
     public ResponseEntity<List<AlbumDto>> albumSearch(@RequestParam("keyword")String keyword, @RequestParam("offset")int offset, @RequestParam("limit")int limit) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
         return ResponseEntity.ok(SpotifyAllSearchApi.spotifyAlbumSearchApi(spotifyApi.getAccessToken(), keyword, offset, limit));

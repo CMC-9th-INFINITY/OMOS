@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.infinity.omos.domain.Posts.QPosts.posts;
+import static com.infinity.omos.domain.QFollow.follow;
 import static com.infinity.omos.domain.QLike.like;
 import static com.infinity.omos.domain.QScrap.scrap;
 import static com.infinity.omos.domain.QUser.user;
@@ -42,6 +43,10 @@ public class QueryRepository {
 
     public Scrap findScrapByUserIdPostId(User userId, Posts posts){
         return queryFactory.selectFrom(scrap).where(scrap.userId.eq(userId),scrap.postId.eq(posts)).fetchOne();
+    }
+
+    public Follow findFollowByUserId(User toUserId, User fromUserId){
+        return queryFactory.selectFrom(follow).where(follow.toUserId.eq(toUserId),follow.fromUserId.eq(fromUserId)).fetchOne();
     }
 
     public Boolean existsLikeByUserIdPostId(User userId, Posts postsId){

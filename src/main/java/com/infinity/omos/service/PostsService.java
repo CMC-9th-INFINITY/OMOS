@@ -82,21 +82,7 @@ public class PostsService {
             TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
             User user = userRepository.getById(userId);
             postsDetailResponseDtos.add(
-                    PostsDetailResponseDto.builder()
-                            .createdDate(post.getCreatedDate())
-                            .recordTitle(post.getTitle())
-                            .recordContents(post.getContents())
-                            .recordId(post.getId())
-                            .viewsCnt(post.getCnt())
-                            .userId(userId)
-                            .nickname(user.getNickname())
-                            .isLiked(likeRepository.existsByUserId(user))
-                            .isScraped(scrapRepository.existsByUserId(user))
-                            .likeCnt(likeRepository.countByPostId(post))
-                            .scrapCnt(scrapRepository.countByPostId(post))
-                            .music(getMusicDto(trackDto))
-                            .category(post.getCategory())
-                            .build()
+                    getPostsDetailResponseDto(post, user, trackDto)
             );
         }
         return postsDetailResponseDtos;
@@ -165,10 +151,10 @@ public class PostsService {
                 .recordContents(posts.getContents())
                 .recordId(posts.getId())
                 .viewsCnt(posts.getCnt())
-                .userId(user.getId())
-                .nickname(user.getNickname())
-                .isLiked(likeRepository.existsByUserId(user))
-                .isScraped(scrapRepository.existsByUserId(user))
+                .userId(posts.getUserId().getId())
+                .nickname(posts.getUserId().getNickname())
+                .isLiked(queryRepository.existsLikeByUserIdPostId(user,posts))
+                .isScraped(queryRepository.existsScarpByUserIdPostId(user,posts))
                 .likeCnt(likeRepository.countByPostId(posts))
                 .scrapCnt(scrapRepository.countByPostId(posts))
                 .music(getMusicDto(trackDto))
@@ -209,7 +195,7 @@ public class PostsService {
     }
 
     @Transactional
-    public StateDto delete(Long postsId){
+    public StateDto delete(Long postsId) {
         Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
         postsRepository.delete(posts);
         return StateDto.builder().state(true).build();

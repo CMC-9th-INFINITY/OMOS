@@ -42,6 +42,7 @@ public class Posts extends BaseTimeEntity {
 
     private String contents;
 
+    private String imageUrl;
 
     private int cnt;
 
