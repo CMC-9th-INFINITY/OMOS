@@ -146,7 +146,7 @@ public class SpotifyAllSearchApi {
             while ((line = br.readLine()) != null) {
                 result.append(line);
             }
-
+            System.out.println(result.toString());
 
             //Gson 라이브러리로 JSON파싱
 
@@ -201,7 +201,12 @@ public class SpotifyAllSearchApi {
 
             JsonObject album = object.get("album").getAsJsonObject();
             trackDto.setAlbumId(album.get("id").getAsString());
-            trackDto.setAlbumImageUrl(album.get("images").getAsJsonArray().get(1).getAsJsonObject().get("url").getAsString());
+            JsonArray imageList = album.get("images").getAsJsonArray();
+            if (imageList.isEmpty()) {
+                trackDto.setAlbumImageUrl(null);
+            } else {
+                trackDto.setAlbumImageUrl(imageList.get(1).getAsJsonObject().get("url").getAsString());
+            }
             trackDto.setAlbumTitle(album.get("name").getAsString());
             trackDto.setReleaseDate(album.get("release_date").getAsString());
 
@@ -311,8 +316,12 @@ public class SpotifyAllSearchApi {
             trackDto.setArtists(artists1);
             trackDto.setAlbumId(album.get("id").getAsString());
 
-            JsonObject images = album.get("images").getAsJsonArray().get(1).getAsJsonObject();
-            trackDto.setAlbumImageUrl(images.get("url").getAsString());
+            JsonArray images = album.get("images").getAsJsonArray();
+            if (images.isEmpty()) {
+                trackDto.setAlbumImageUrl(null);
+            } else {
+                trackDto.setAlbumImageUrl(images.get(1).getAsJsonObject().get("url").getAsString());
+            }
 
             trackDto.setAlbumTitle(album.get("name").getAsString());
             trackDto.setReleaseDate(album.get("release_date").getAsString());
@@ -344,8 +353,12 @@ public class SpotifyAllSearchApi {
             artistDto.setGenres(genre);
 
 
-            JsonObject images = items.get(i).getAsJsonObject().get("images").getAsJsonArray().get(1).getAsJsonObject();
-            artistDto.setArtistImageUrl(images.get("url").getAsString());
+            JsonArray imagesArray = items.get(i).getAsJsonObject().get("images").getAsJsonArray();
+            if (imagesArray.isEmpty()) {
+                artistDto.setArtistImageUrl(null);
+            } else {
+                artistDto.setArtistImageUrl(imagesArray.get(0).getAsJsonObject().get("url").getAsString());
+            }
 
 
             artistDto.setArtistId(items.get(i).getAsJsonObject().get("id").getAsString());
@@ -378,8 +391,12 @@ public class SpotifyAllSearchApi {
             albumDto.setArtists(artistsList);
 
 
-            JsonObject images = items.get(i).getAsJsonObject().get("images").getAsJsonArray().get(1).getAsJsonObject();
-            albumDto.setAlbumImageUrl(images.get("url").getAsString());
+            JsonArray imagesList = items.get(i).getAsJsonObject().get("images").getAsJsonArray();
+            if (imagesList.isEmpty()) {
+                albumDto.setAlbumImageUrl(null);
+            } else {
+                albumDto.setAlbumImageUrl(imagesList.get(1).getAsJsonObject().get("url").getAsString());
+            }
 
 
             albumDto.setAlbumId(items.get(i).getAsJsonObject().get("id").getAsString());

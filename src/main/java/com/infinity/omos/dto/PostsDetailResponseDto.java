@@ -19,6 +19,8 @@ public class PostsDetailResponseDto {
     private Long recordId;
     private String recordTitle;
     private String recordContents;
+    private String recordImageUrl;
+
     private LocalDateTime createdDate;
     private Category category;
 
@@ -38,7 +40,7 @@ public class PostsDetailResponseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean isPublic;
 
-    private String imageUrl;
+
 
 
 

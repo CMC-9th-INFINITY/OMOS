@@ -13,6 +13,7 @@ public class PostsResponseDto {
 
     private MusicDto music;
     private String recordTitle;
+    private String recordImageUrl;
     private Long userId;
     private String nickname;
     private Long recordId;

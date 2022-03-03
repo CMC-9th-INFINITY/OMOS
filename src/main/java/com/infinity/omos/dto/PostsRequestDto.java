@@ -20,6 +20,7 @@ public class PostsRequestDto {
     private Boolean isPublic;
     private String title;
     private String contents;
+    private String imageUrl;
 
     public Posts toPosts(Music music,User user) {
         return Posts.builder()
@@ -28,6 +29,7 @@ public class PostsRequestDto {
                 .category(category)
                 .isPublic(isPublic)
                 .title(title)
+                .imageUrl(imageUrl)
                 .contents(contents)
                 .cnt(0)
                 .build();
