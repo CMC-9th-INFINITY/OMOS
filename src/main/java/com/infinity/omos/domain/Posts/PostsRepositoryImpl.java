@@ -30,7 +30,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
     public Page<Posts> findAllByCategory(Category category, Pageable pageable){
         QueryResults<Posts> results = queryFactory
                 .select(posts)
-                .from(posts,like)
+                .from(posts)
                 .where(posts.category.eq(category),posts.isPublic.eq(true))
                 .offset(pageable.getOffset())   //N 번부터 시작
                 .limit(pageable.getPageSize()) //조회 갯수
@@ -62,6 +62,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         }
         return null;
     }
+
+
 
 
 
