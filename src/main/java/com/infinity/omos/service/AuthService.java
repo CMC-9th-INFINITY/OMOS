@@ -86,7 +86,7 @@ public class AuthService {
         if (userRepository.existsByNickname(snsSignUpDto.getNickname())) {
             throw new RuntimeException("이미 있는 닉네임입니다");
         }
-        if (snsSignUpDto.getType() == ProviderType.KAKAO && !snsSignUpDto.getEmail().contains("@kakao.com")){
+        if (snsSignUpDto.getType() == ProviderType.KAKAO && !snsSignUpDto.getEmail().contains("@kakao.com")) {
             throw new RuntimeException("카카오 아이디 형식을 확인해주세요");
         }
 

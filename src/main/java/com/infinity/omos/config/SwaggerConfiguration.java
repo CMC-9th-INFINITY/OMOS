@@ -81,7 +81,7 @@ public class SwaggerConfiguration {
         @ApiModelProperty(value = "페이지 크기", allowableValues="range[0, 100]")
         private Integer size;
 
-        @ApiModelProperty(value = "정렬(사용법: 컬럼명,ASC|DESC) 현재 컬럼명 createdDate(날짜), cnt(조회수) 따라서 cnt,asc 라고 하면 조회오름차순/cnt,desc라고 하면 조회내림차순으로 저희가 아는 조회순이 됩니다! 공감순은 저의 역량부족으로 현재 보류중입니다.. 빠른시일내에 구현해보도록 하겠습니다..ㅠ")
+        @ApiModelProperty(value = "정렬(사용법: 컬럼명,ASC|DESC) 현재 컬럼명 createdDate(날짜), viewsCount(조회수) 따라서 cnt,asc 라고 하면 조회오름차순/cnt,desc라고 하면 조회내림차순으로 저희가 아는 조회순이 됩니다! 공감순은 저의 역량부족으로 현재 보류중입니다.. 빠른시일내에 구현해보도록 하겠습니다..ㅠ")
         private List<String> sort;
     }
 

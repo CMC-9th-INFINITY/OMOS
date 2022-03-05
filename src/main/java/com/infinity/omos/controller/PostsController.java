@@ -35,7 +35,7 @@ public class PostsController {
 
     @ApiOperation(value = "레코드 저장")
     @PostMapping("/save")
-    public ResponseEntity<HashMap<String, Long>> savePosts(@RequestBody PostsRequestDto postsRequestDto) {
+    public ResponseEntity<StateDto> savePosts(@RequestBody PostsRequestDto postsRequestDto) {
         return ResponseEntity.ok(postsService.save(postsRequestDto));
     }
 
@@ -45,16 +45,16 @@ public class PostsController {
         return ResponseEntity.ok(postsService.plusViewsCnt(postId));
     }
 
-    @ApiOperation(value = "MY레코드 전체 불러오기", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
-    @GetMapping("/{userId}")
+    @ApiOperation(value = "MY레코드 전체 불러오기(취소)", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
+    @GetMapping("/{userId}/cancel")
     public ResponseEntity<List<MyRecordDto>> selectMyPosts(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(postsService.selectMyPosts(userId));
     }
 
-    @ApiOperation(value = "My레코드 상세보기")
-    @GetMapping("/{userId}/{postId}")
-    public ResponseEntity<PostsDetailResponseDto> selectMyPost(@PathVariable("userId") Long userId, @PathVariable("postId") Long postId) {
-        return ResponseEntity.ok(postsService.selectMyPost(postId, userId));
+    @ApiOperation(value = "My레코드 전체 불러오기", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<PostsDetailResponseDto>> selectMyPost(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(postsService.selectMyPost(userId));
     }
 
     @ApiOperation(value = "레코드 비공개 공개 활성화", notes = "비공개였으면 공개, 공개였으면 비공개로 전환됩니다.")
@@ -71,7 +71,7 @@ public class PostsController {
 
     @ApiOperation(value = "레코드 삭제")
     @DeleteMapping("/delete/{postId}")
-    public ResponseEntity<StateDto> deletePosts(@PathVariable("postId") Long postId){
+    public ResponseEntity<StateDto> deletePosts(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postsService.delete(postId));
     }
 

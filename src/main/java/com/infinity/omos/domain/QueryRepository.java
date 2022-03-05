@@ -37,6 +37,10 @@ public class QueryRepository {
         return queryFactory.selectFrom(posts).where(posts.userId.eq(userId)).fetch();
     }
 
+    public List<Long> findPostsIdByUserId(User userId){
+        return queryFactory.select(posts.id).from(posts).where(posts.userId.eq(userId)).fetch();
+    }
+
     public Like findLikeByUserIdPostId(User userId, Posts posts) {
         return queryFactory.selectFrom(like).where(like.userId.eq(userId), like.postId.eq(posts)).fetchOne();
     }
