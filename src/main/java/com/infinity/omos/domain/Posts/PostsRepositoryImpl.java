@@ -1,15 +1,10 @@
 package com.infinity.omos.domain.Posts;
 
 import com.infinity.omos.domain.Category;
-import com.infinity.omos.domain.QLike;
-import com.querydsl.core.Query;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import static com.infinity.omos.domain.Posts.QPosts.posts;
-import static com.infinity.omos.domain.QLike.like;
 
 @RequiredArgsConstructor
 public class PostsRepositoryImpl implements PostsRepositoryCustom {
@@ -61,6 +55,24 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
             }
         }
         return null;
+    }
+
+    public List<Posts> paginationNoOffset(Long postId, String musicId, int pageSize){
+        return queryFactory
+                .selectFrom(posts)
+                .where(
+                        ltPostId(postId),
+                        posts.musicId.id.eq(musicId))
+                .orderBy(posts.id.desc())
+                .limit(pageSize)
+                .fetch();
+    }
+
+    private BooleanExpression ltPostId(Long postId){
+        if(postId == null){
+            return null;
+        }
+        return posts.id.lt(postId);
     }
 
 

@@ -1,6 +1,7 @@
 package com.infinity.omos.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @Setter
+
 public class ArtistDto {
 
     private String artistName;

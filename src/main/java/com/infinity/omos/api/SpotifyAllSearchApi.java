@@ -296,10 +296,10 @@ public class SpotifyAllSearchApi {
         return albumTrackDtos;
     }
 
-    public static void getHotTracksApi(String accessToken, String id){
-        List<AlbumTrackDto> albumTrackDtos = new ArrayList<>();
+    public static List<HotTrackDto> getHotTracksApi(String accessToken, String id) {
+        List<HotTrackDto> hotTrackDtos = new ArrayList<>();
 
-        String reqURL = "https://api.spotify.com/v1/artists/" + id + "{id}/top-tracks?market=KR" + "&locale=ko-KR%2Cko%3Bq%3D0.9%2Cen-US%3Bq%3D0.8%2Cen%3Bq%3D0.7";
+        String reqURL = "https://api.spotify.com/v1/artists/" + id + "/top-tracks?market=KR" + "&locale=ko-KR%2Cko%3Bq%3D0.9%2Cen-US%3Bq%3D0.8%2Cen%3Bq%3D0.7";
 
         try {
             URL url = new URL(reqURL);
@@ -334,31 +334,114 @@ public class SpotifyAllSearchApi {
 
             JsonArray tracks = object.get("tracks").getAsJsonArray();
             for (int i = 0; i < tracks.size(); i++) {
-                AlbumTrackDto albumTrackDto = new AlbumTrackDto();
-                JsonObject item = items.get(i).getAsJsonObject();
-                JsonArray artists = item.get("artists").getAsJsonArray();
-                List<Artists> artistsList = new ArrayList<>();
-                for (int j = 0; j < artists.size(); j++) {
-                    Artists artist = new Artists();
-                    artist.setArtistName(artists.get(j).getAsJsonObject().get("name").getAsString());
-                    artist.setArtistId(artists.get(j).getAsJsonObject().get("id").getAsString());
-                    artistsList.add(artist);
+                HotTrackDto hotTrackDto = new HotTrackDto();
+                JsonObject item = tracks.get(i).getAsJsonObject();
+                JsonObject album = item.getAsJsonObject("album");
+                JsonArray images = album.get("images").getAsJsonArray();
+                if (images.isEmpty()) {
+                    hotTrackDto.setAlbumImageUrl(null);
+                } else {
+                    hotTrackDto.setAlbumImageUrl(images.get(0).getAsJsonObject().get("url").getAsString());
                 }
-                albumTrackDto.setArtists(artistsList);
-                albumTrackDto.setMusicId(item.get("id").getAsString());
-                albumTrackDto.setMusicTitle(item.get("name").getAsString());
 
-                albumTrackDtos.add(albumTrackDto);
+                JsonArray artists = item.getAsJsonArray("artists");
+                List<String> artistName = new ArrayList<>();
+                for (int j = 0; j < artists.size(); j++) {
+                    artistName.add(artists.get(j).getAsJsonObject().get("name").getAsString());
+                }
+                hotTrackDto.setArtistName(artistName);
+
+                hotTrackDto.setMusicTitle(item.get("name").getAsString());
+                hotTrackDto.setMusicId(item.get("id").getAsString());
+
+
+                hotTrackDtos.add(hotTrackDto);
 
             }
 
 
             br.close();
         } catch (IOException e) {
-            throw new RuntimeException("Error: spotifyAPI오류 " + e.getMessage());
+            System.out.println("Error: spotifyAPI오류 " + e.getMessage());
         }
 
-        return albumTrackDtos;
+        return hotTrackDtos;
+
+    }
+
+    public static List<AlbumDto> getArtistsAlbum(String accessToken, String id, int offset, int limit) {
+        List<AlbumDto> albumDtoList = new ArrayList<>();
+
+        String reqURL = "https://api.spotify.com/v1/artists/" + id + "/albums?market=KR" + "&locale=ko-KR%2Cko%3Bq%3D0.9%2Cen-US%3Bq%3D0.8%2Cen%3Bq%3D0.7" + "&offset=" + offset + "&limit=" + limit;
+
+        try {
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+
+            conn.setDoOutput(true);
+
+            //결과 코드가 200이라면 성공
+            int responseCode = conn.getResponseCode();
+            System.out.println("responseCode : " + responseCode);
+
+            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+            String line = "";
+            StringBuilder result = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+
+            //Gson 라이브러리로 JSON파싱
+
+
+            JsonElement element = JsonParser.parseString(result.toString());
+            JsonObject object = element.getAsJsonObject();
+
+            JsonArray items = object.get("items").getAsJsonArray();
+            for (int i = 0; i < items.size(); i++) {
+                AlbumDto albumDto = new AlbumDto();
+                JsonObject item = items.get(i).getAsJsonObject();
+
+                JsonArray images = item.getAsJsonArray("images");
+                if (images.isEmpty()) {
+                    albumDto.setAlbumImageUrl(null);
+                } else {
+                    albumDto.setAlbumImageUrl(images.get(0).getAsJsonObject().get("url").getAsString());
+                }
+
+                JsonArray artists = item.getAsJsonArray("artists");
+                List<Artists> artistName = new ArrayList<>();
+                for (int j = 0; j < artists.size(); j++) {
+                    Artists artist = new Artists();
+                    artist.setArtistName(artists.get(j).getAsJsonObject().get("name").getAsString());
+                    artistName.add(artist);
+                }
+                albumDto.setArtists(artistName);
+
+                albumDto.setAlbumTitle(item.get("name").getAsString());
+                albumDto.setAlbumId(item.get("id").getAsString());
+                albumDto.setReleaseDate(item.get("release_date").getAsString());
+
+
+                albumDtoList.add(albumDto);
+
+            }
+
+
+            br.close();
+        } catch (IOException e) {
+            System.out.println("Error: spotifyAPI오류 " + e.getMessage());
+        }
+
+        return albumDtoList;
 
     }
 

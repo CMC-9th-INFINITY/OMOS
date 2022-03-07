@@ -5,6 +5,7 @@ import com.infinity.omos.api.SpotifyAllSearchApi;
 import com.infinity.omos.api.SpotifyApiAuthorization;
 import com.infinity.omos.dto.AlbumDto;
 import com.infinity.omos.dto.AlbumTrackDto;
+import com.infinity.omos.dto.HotTrackDto;
 import com.infinity.omos.dto.TrackDto;
 import com.infinity.omos.service.AuthService;
 import org.junit.jupiter.api.Test;
@@ -46,11 +47,10 @@ public class GeniusRequestApiTests {
     @Test
     public void test() {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-        List<AlbumDto> trackDtos = SpotifyAllSearchApi.spotifyAlbumSearchApi(spotifyApi.getAccessToken(),"샴푸",0,10);
-  //      for(AlbumDto trackDto : trackDtos){
-//            System.out.println(trackDto.getMusicTitle());
-
-    //    }
+        List<HotTrackDto> trackDtos = SpotifyAllSearchApi.getHotTracksApi(spotifyApi.getAccessToken(),"3HqSLMAZ3g3d5poNaI7GOU");
+        for(HotTrackDto trackDto : trackDtos){
+            System.out.println(trackDto.getMusicTitle());
+        }
 
     }
 }

@@ -18,9 +18,9 @@ public class PostsRequestDto {
     private Long userId;
     private Category category;
     private Boolean isPublic;
-    private String title;
-    private String contents;
-    private String imageUrl;
+    private String recordTitle;
+    private String recordContents;
+    private String recordImageUrl;
 
     public Posts toPosts(Music music,User user) {
         return Posts.builder()
@@ -28,9 +28,9 @@ public class PostsRequestDto {
                 .userId(user)
                 .category(category)
                 .isPublic(isPublic)
-                .title(title)
-                .imageUrl(imageUrl)
-                .contents(contents)
+                .title(recordTitle)
+                .imageUrl(recordImageUrl)
+                .contents(recordContents)
                 .cnt(0)
                 .build();
     }

@@ -12,5 +12,6 @@ public interface PostsRepository extends JpaRepository<Posts, Long>, PostsReposi
     int countByUserId(User user);
 
 
+
 }
 
