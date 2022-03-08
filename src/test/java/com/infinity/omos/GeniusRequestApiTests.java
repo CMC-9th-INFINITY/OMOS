@@ -3,6 +3,10 @@ package com.infinity.omos;
 import com.infinity.omos.api.RequestGeniusApi;
 import com.infinity.omos.api.SpotifyAllSearchApi;
 import com.infinity.omos.api.SpotifyApiAuthorization;
+import com.infinity.omos.domain.Posts.Posts;
+import com.infinity.omos.domain.QueryRepository;
+import com.infinity.omos.domain.User;
+import com.infinity.omos.domain.UserRepository;
 import com.infinity.omos.dto.AlbumDto;
 import com.infinity.omos.dto.AlbumTrackDto;
 import com.infinity.omos.dto.HotTrackDto;
@@ -28,6 +32,12 @@ public class GeniusRequestApiTests {
     @Autowired
     AuthService authService;
 
+    @Autowired
+    QueryRepository queryRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
     @Test
     public void requestGeniusSearchApi() throws IOException {
         RequestGeniusApi geniusRequestApi = new RequestGeniusApi();
@@ -52,6 +62,15 @@ public class GeniusRequestApiTests {
             System.out.println(trackDto.getMusicTitle());
         }
 
+    }
+
+    @Test
+    public void repositoryTest(){
+        User user = userRepository.getById(1L);
+        List<Posts> postsList = queryRepository.findAllMyDj(user);
+        for(Posts post : postsList){
+            System.out.println(post.getId());
+        }
     }
 }
 

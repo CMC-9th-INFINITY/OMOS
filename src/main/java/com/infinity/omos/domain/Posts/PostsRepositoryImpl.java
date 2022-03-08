@@ -62,7 +62,8 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .selectFrom(posts)
                 .where(
                         ltPostId(postId),
-                        posts.musicId.id.eq(musicId))
+                        posts.musicId.id.eq(musicId),
+                        posts.isPublic.eq(true))
                 .orderBy(posts.id.desc())
                 .limit(pageSize)
                 .fetch();

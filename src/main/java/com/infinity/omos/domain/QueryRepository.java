@@ -90,6 +90,16 @@ public class QueryRepository {
                 .fetch();
     }
 
+    public List<Posts> findAllMyDj(User userId){
+        return queryFactory
+                .selectFrom(posts)
+                .innerJoin(follow).on(posts.userId.eq(follow.toUserId))
+                .innerJoin(user).on(follow.fromUserId.eq(user))
+                .where(user.eq(userId))
+                .groupBy(posts.id)
+                .fetch();
+    }
+
 
 
 
