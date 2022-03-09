@@ -2,6 +2,9 @@ package com.infinity.omos.domain;
 
 
 import com.infinity.omos.domain.Posts.Posts;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -35,6 +38,10 @@ public class QueryRepository {
 
     public List<Posts> findPostsByUserId(User userId) {
         return queryFactory.selectFrom(posts).where(posts.userId.eq(userId)).fetch();
+    }
+
+    public List<Posts> findPublicPostsByUserId(User userId){
+        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId),posts.isPublic.eq(true)).fetch();
     }
 
     public List<Long> findPostsIdByUserId(User userId){
@@ -90,14 +97,79 @@ public class QueryRepository {
                 .fetch();
     }
 
-    public List<Posts> findAllMyDj(User userId){
+    public List<Posts> findAllMyDj(User userId,  Long postId, int pageSize){
         return queryFactory
                 .selectFrom(posts)
                 .innerJoin(follow).on(posts.userId.eq(follow.toUserId))
                 .innerJoin(user).on(follow.fromUserId.eq(user))
-                .where(user.eq(userId))
+                .where(
+                        ltPostId(postId),
+                        user.eq(userId))
                 .groupBy(posts.id)
+                .orderBy(posts.id.desc())
+                .limit(pageSize)
                 .fetch();
+    }
+
+    public List<Posts> findAllByMusicId(Long postId, String musicId, int pageSize){
+        return queryFactory
+                .selectFrom(posts)
+                .where(
+                        ltPostId(postId),
+                        posts.musicId.id.eq(musicId),
+                        posts.isPublic.eq(true))
+                .groupBy(posts.id)
+                .orderBy(posts.id.desc())
+                .limit(pageSize)
+                .fetch();
+    }
+
+    private BooleanExpression ltPostId(Long postId){
+        if(postId == null){
+            return null;
+        }
+        return posts.id.lt(postId);
+    }
+
+    public List<Posts> findAllByCategoryOrderByLike(Category category, Long postId, int pageSize){
+
+        return queryFactory.selectFrom(posts)
+                .innerJoin(like).on(like.postId.eq(posts))
+                .where(
+                        ltPostId(postId),
+                        posts.category.eq(category)
+                        ,posts.isPublic.eq(true))
+                .groupBy(posts.id)
+                .orderBy(like.id.count().desc())
+                .limit(pageSize)
+                .fetch();
+
+    }
+
+    public List<Posts> findAllByCategoryOrderByRandom(Category category, Long postId, int pageSize){
+
+        return queryFactory.selectFrom(posts)
+                .where(
+                        ltPostId(postId),
+                        posts.category.eq(category),
+                        posts.isPublic.eq(true))
+                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .limit(pageSize)
+                .fetch();
+
+    }
+
+    public List<Posts> findAllByCategoryOrderByViewsCount(Category category, Long postId, int pageSize){
+
+        return queryFactory.selectFrom(posts)
+                .where(
+                        ltPostId(postId),
+                        posts.category.eq(category),
+                        posts.isPublic.eq(true))
+                .orderBy(posts.id.desc())
+                .limit(pageSize)
+                .fetch();
+
     }
 
 

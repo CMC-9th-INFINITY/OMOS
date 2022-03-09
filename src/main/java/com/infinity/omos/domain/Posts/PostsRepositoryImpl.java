@@ -4,7 +4,7 @@ import com.infinity.omos.domain.Category;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,7 +46,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 // 서비스에서 넣어준 정렬 조건을 스위치 케이스 문을 활용하여 셋팅하여 준다.
                 switch (order.getProperty()){
                     case "viewsCount":
-                        return new OrderSpecifier(direction, posts.cnt);
+                        return new OrderSpecifier(direction, NumberExpression.random());
                     //case "likeCount":
                     //    return new OrderSpecifier(direction, like.postId.id.eq(posts.id).count());
                     case "createdDate":
@@ -57,24 +57,12 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         return null;
     }
 
-    public List<Posts> paginationNoOffset(Long postId, String musicId, int pageSize){
-        return queryFactory
-                .selectFrom(posts)
-                .where(
-                        ltPostId(postId),
-                        posts.musicId.id.eq(musicId),
-                        posts.isPublic.eq(true))
-                .orderBy(posts.id.desc())
-                .limit(pageSize)
-                .fetch();
-    }
 
-    private BooleanExpression ltPostId(Long postId){
-        if(postId == null){
-            return null;
-        }
-        return posts.id.lt(postId);
-    }
+
+
+
+
+
 
 
 

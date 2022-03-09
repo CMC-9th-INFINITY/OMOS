@@ -8,6 +8,7 @@ import com.infinity.omos.dto.MyDjDto;
 import com.infinity.omos.dto.StateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ public class FollowService {
     private final QueryRepository queryRepository;
     private final PostsRepository postsRepository;
 
+    @Transactional
     public StateDto save(Long fromUserId, Long toUserId) {
         User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
@@ -36,6 +38,7 @@ public class FollowService {
         return StateDto.builder().state(true).build();
     }
 
+    @Transactional
     public StateDto delete(Long fromUserId, Long toUserId) {
         User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
@@ -44,6 +47,8 @@ public class FollowService {
         return StateDto.builder().state(true).build();
     }
 
+
+    @Transactional(readOnly = true)
     public List<MyDjDto> selectMyDjList(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
 
@@ -54,6 +59,7 @@ public class FollowService {
 
     }
 
+    @Transactional(readOnly = true)
     public DjprofileDto selectFollowCount(Long fromUserId, Long toUserId) {
         Optional<User> optionalUser = userRepository.findById(toUserId);
 
@@ -77,6 +83,9 @@ public class FollowService {
         }
 
     }
+
+
+
 
 
 }

@@ -74,11 +74,25 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, Pageable pageable, Long userId) {
+    public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, SortType sortType, Long postId, int pageSize, Long userId) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
         List<PostsDetailResponseDto> postsDetailResponseDtos = new ArrayList<>();
-        Page<Posts> posts = postsRepository.findAllByCategory(category, pageable);
+        List<Posts> posts;
+        switch (sortType) {
+            case viewsCount:
+                posts = queryRepository.findAllByCategoryOrderByViewsCount(category, postId, pageSize);
+                break;
+            case like:
+                posts = queryRepository.findAllByCategoryOrderByLike(category, postId, pageSize);
+                break;
+            case random:
+                posts = queryRepository.findAllByCategoryOrderByRandom(category, postId, pageSize);
+                break;
+            default:
+                return postsDetailResponseDtos;
+
+        }
         for (Posts post : posts) {
             TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
             User user = userRepository.getById(userId);
@@ -87,6 +101,10 @@ public class PostsService {
             );
         }
         return postsDetailResponseDtos;
+    }
+
+    public enum SortType {
+        viewsCount, random, like
     }
 
     @Transactional
@@ -223,14 +241,13 @@ public class PostsService {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
-        List<Posts> postsList = postsRepository.paginationNoOffset(postId, musicId, pageSize); //이게 지금은 list를 다 받아와서 하는데 나중엔 하나씩받아와서 받아올때마다 dto만들고 의 반복으로 할 수 있을지 알아보자
+        List<Posts> postsList = queryRepository.findAllByMusicId(postId, musicId, pageSize); //이게 지금은 list를 다 받아와서 하는데 나중엔 하나씩받아와서 받아올때마다 dto만들고 의 반복으로 할 수 있을지 알아보자
 
         List<PostsDetailResponseDto> postsDetailResponseDtoList = new ArrayList<>();
         TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), postsList.get(0).getMusicId().getId());//어차피 같은 뮤직아이디라서 한번만 조회하고 다 넣어주는게 좋을듯
         for (Posts post : postsList) {
 
             PostsDetailResponseDto postsDetailResponseDto = getPostsDetailResponseDto(post, user, trackDto);
-            postsDetailResponseDto.setIsPublic(post.getIsPublic());
 
             postsDetailResponseDtoList.add(postsDetailResponseDto);
 
@@ -238,7 +255,57 @@ public class PostsService {
         return postsDetailResponseDtoList;
     }
 
+    @Transactional(readOnly = true)
+    public List<PostsDetailResponseDto> selectPostsByUserId(Long fromUserId, Long toUserId) {
+        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
+        User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+
+        List<PostsDetailResponseDto> postsDetailResponseDtoList = new ArrayList<>();
+
+        List<Posts> postsList = queryRepository.findPublicPostsByUserId(toUser);
+        for (Posts post : postsList) {
+            TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+
+            PostsDetailResponseDto postsDetailResponseDto = getPostsDetailResponseDto(post, fromUser, trackDto);
+
+            postsDetailResponseDtoList.add(postsDetailResponseDto);
+
+        }
+
+        return postsDetailResponseDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostsDetailResponseDto> selectMyDjPosts(Long userId, Long postId, int pageSize) {
+        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+
+        List<PostsDetailResponseDto> postsDetailResponseDtoList = new ArrayList<>();
+        List<Posts> postsList = queryRepository.findAllMyDj(user, postId, pageSize);
+
+        for (Posts post : postsList) {
+            TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+            PostsDetailResponseDto postsDetailResponseDto = getPostsDetailResponseDto(post, user, trackDto);
+
+            postsDetailResponseDtoList.add(postsDetailResponseDto);
+        }
+        return postsDetailResponseDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    public PostsDetailResponseDto selectPostById(Long postId, Long userId) {
+        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        Posts post = postsRepository.findById(postId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
+
+        TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+
+        return getPostsDetailResponseDto(post, user, trackDto);
+    }
 
 
 }

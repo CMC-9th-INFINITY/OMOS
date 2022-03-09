@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface PostsRepositoryCustom {
     Page<Posts> findAllByCategory(Category category, Pageable pageable);
-    List<Posts> paginationNoOffset(Long postId, String musicId, int pageSize);
+    //List<Posts> findAllByMusicId(Long postId, String musicId, int pageSize);
 }

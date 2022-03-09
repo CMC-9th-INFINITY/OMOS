@@ -422,6 +422,7 @@ public class SpotifyAllSearchApi {
                 for (int j = 0; j < artists.size(); j++) {
                     Artists artist = new Artists();
                     artist.setArtistName(artists.get(j).getAsJsonObject().get("name").getAsString());
+                    artist.setArtistId(artists.get(j).getAsJsonObject().get("id").getAsString());
                     artistName.add(artist);
                 }
                 albumDto.setArtists(artistName);

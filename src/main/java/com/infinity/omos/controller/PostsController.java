@@ -6,7 +6,6 @@ import com.infinity.omos.service.PostsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +26,10 @@ public class PostsController {
         return ResponseEntity.ok(postsService.selectRecordsMatchingAllCategory());
     }
 
-    @ApiOperation(value = "전체레코드에서 상세보기", notes = "예를 들어 게시판이 있다고 생각하고 한 페이지마다 3개씩 글이 있고 3번째 페이지에 있는 글을 가져오고 싶다! 하면 page=3&size=3 이런식으로 하시면 됩니당! 이건 글을 불러올때 한번에 다 불러오는건 낭비니까 계속 조금씩 불러오는걸루 생각하시면 되고 실전에서 쓰실때는 size는 고정으로 page는 0부터 차근차근 높여가시면 될 듯 합니다!")
+    @ApiOperation(value = "전체레코드에서 상세보기", notes = "postId는 처음엔 아무것도 안주시면 됩니다. 그리고 두번째부터는 첫번째에 받았던 마지막 postId를 넣어주시면 그 이후 post부터 나오게 됩니다.")
     @GetMapping("/select/category/{category}")
-    public ResponseEntity<List<PostsDetailResponseDto>> selectPostsMatchingCategory(@PathVariable("category") Category category, @RequestParam("userid") Long userId, Pageable pageable) {
-        return ResponseEntity.ok(postsService.selectRecordsByCategory(category, pageable, userId));
+    public ResponseEntity<List<PostsDetailResponseDto>> selectPostsMatchingCategory(@PathVariable("category") Category category, @RequestParam("sortType") PostsService.SortType sortType, Long postId, @RequestParam("size") int pageSize, @RequestParam("userid") Long userId) {
+        return ResponseEntity.ok(postsService.selectRecordsByCategory(category, sortType, postId, pageSize, userId));
     }
 
     @ApiOperation(value = "레코드 저장")
@@ -76,10 +75,26 @@ public class PostsController {
     }
 
     @ApiOperation(value = "한 노래에 따른 레코드 API", notes = "해당 노래를 클릭하면 해당하는 레코드들이 나오게 되는 부분입니다! 이 부분은 다른 페이징이랑 달라서 죄송해요ㅠㅠ 제가 여러가지 시도하다보니ㅠㅠ 아마 그 전 페이징도 나중에 바뀌지 않을까 싶습니다ㅠㅠ 파라미터에 대해 설명 드리자면, postId는 처음엔 아무것도 안주시면 됩니다. 그리고 두번째부터는 첫번째에 받았던 마지막 postId를 넣어주시면 그 이후 post부터 나오게 됩니다.")
-    @GetMapping("/select/{musicId}")
+    @GetMapping("/select/music/{musicId}")
     public ResponseEntity<List<PostsDetailResponseDto>> selectPostsByMusicId(@PathVariable("musicId") String musicId, @RequestParam("userId") Long userId, Long postId, @RequestParam("size") int pageSize) {
         return ResponseEntity.ok(postsService.selectPostsByMusicId(musicId, userId, postId, pageSize));
     }
 
+    @ApiOperation(value = "해당 유저 레코드 목록 불러오기", notes = "fromUserId는 지금 이용하고 있는 유저, toUserId는 레코드 목록을 불러오고 싶은 유저")
+    @GetMapping("/select/user/{fromUserId}/{toUserId}")
+    public ResponseEntity<List<PostsDetailResponseDto>> selectPostsByUserId(@PathVariable("fromUserId") Long fromUserId, @PathVariable("toUserId") Long toUserId) {
+        return ResponseEntity.ok(postsService.selectPostsByUserId(fromUserId, toUserId));
+    }
 
+    @ApiOperation(value = "MyDj 전체 레코드 목록 불러오기", notes = "userId는 지금 이용하고 있는 유저")
+    @GetMapping("/select/{userId}/my-dj")
+    public ResponseEntity<List<PostsDetailResponseDto>> selectMyDj(@PathVariable("userId") Long userId, Long postId, @RequestParam("size") int pageSize) {
+        return ResponseEntity.ok(postsService.selectMyDjPosts(userId, postId, pageSize));
+    }
+
+    @ApiOperation(value = "레코드 하나 가져오기", notes = "userId는 지금 이용하고 있는 유저")
+    @GetMapping("/select/{postId}/user/{userId}")
+    public ResponseEntity<PostsDetailResponseDto> selectPost(@PathVariable("userId") Long userId, @PathVariable("postId") Long postId) {
+        return ResponseEntity.ok(postsService.selectPostById(postId, userId));
+    }
 }

@@ -66,11 +66,7 @@ public class GeniusRequestApiTests {
 
     @Test
     public void repositoryTest(){
-        User user = userRepository.getById(1L);
-        List<Posts> postsList = queryRepository.findAllMyDj(user);
-        for(Posts post : postsList){
-            System.out.println(post.getId());
-        }
+
     }
 }
 
