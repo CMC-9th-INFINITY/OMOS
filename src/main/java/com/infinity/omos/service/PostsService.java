@@ -232,6 +232,7 @@ public class PostsService {
     @Transactional
     public StateDto delete(Long postsId) {
         Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
+
         postsRepository.delete(posts);
         return StateDto.builder().state(true).build();
     }
@@ -244,6 +245,10 @@ public class PostsService {
         List<Posts> postsList = queryRepository.findAllByMusicId(postId, musicId, pageSize); //이게 지금은 list를 다 받아와서 하는데 나중엔 하나씩받아와서 받아올때마다 dto만들고 의 반복으로 할 수 있을지 알아보자
 
         List<PostsDetailResponseDto> postsDetailResponseDtoList = new ArrayList<>();
+        if(postsList.isEmpty()){
+            return postsDetailResponseDtoList;
+        }
+
         TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), postsList.get(0).getMusicId().getId());//어차피 같은 뮤직아이디라서 한번만 조회하고 다 넣어주는게 좋을듯
         for (Posts post : postsList) {
 
