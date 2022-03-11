@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
@@ -19,10 +20,13 @@ public class Scrap extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name="user_id")
     private User userId;
 
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name="post_id")
     private Posts postId;

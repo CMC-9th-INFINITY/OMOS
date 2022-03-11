@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class CountDto {
-    private String followerCount;
-    private String followingCount;
-    private String recordsCount;
+    private Integer followerCount;
+    private Integer followingCount;
+    private Integer recordsCount;
 }

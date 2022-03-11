@@ -69,9 +69,9 @@ public class FollowService {
 
             return DjprofileDto.builder()
                     .count(CountDto.builder()
-                            .followerCount(Integer.toString(followRepository.countByToUserId(existedUser)))
-                            .followingCount(Integer.toString(followRepository.countByFromUserId(existedUser)))
-                            .recordsCount(Integer.toString(postsRepository.countByUserId(existedUser)))
+                            .followerCount(followRepository.countByToUserId(existedUser))
+                            .followingCount(followRepository.countByFromUserId(existedUser))
+                            .recordsCount(postsRepository.countByUserId(existedUser))
                             .build())
                     .profile(myDjDto)
                     .isFollowed(queryRepository.existsFollowByUserId(

@@ -232,13 +232,20 @@ public class PostsService {
     @Transactional
     public StateDto delete(Long postsId) {
         Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
+        if(scrapRepository.existsByPostId(posts)){
+            scrapRepository.deleteAllByPostId(posts);
+        }
+        if(likeRepository.existsByPostId(posts))
+        {
+            likeRepository.deleteAllByPostId(posts);
+        }
 
         postsRepository.delete(posts);
         return StateDto.builder().state(true).build();
     }
 
     @Transactional(readOnly = true)
-    public List<PostsDetailResponseDto> selectPostsByMusicId(String musicId, Long userId, Long postId, int pageSize) {
+    public List<PostsDetailResponseDto> selectPostsByMusicId(String musicId, SortType sortType,  Long postId, int pageSize ,Long userId) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));

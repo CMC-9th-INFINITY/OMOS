@@ -76,8 +76,8 @@ public class PostsController {
 
     @ApiOperation(value = "한 노래에 따른 레코드 API", notes = "해당 노래를 클릭하면 해당하는 레코드들이 나오게 되는 부분입니다! 이 부분은 다른 페이징이랑 달라서 죄송해요ㅠㅠ 제가 여러가지 시도하다보니ㅠㅠ 아마 그 전 페이징도 나중에 바뀌지 않을까 싶습니다ㅠㅠ 파라미터에 대해 설명 드리자면, postId는 처음엔 아무것도 안주시면 됩니다. 그리고 두번째부터는 첫번째에 받았던 마지막 postId를 넣어주시면 그 이후 post부터 나오게 됩니다.")
     @GetMapping("/select/music/{musicId}")
-    public ResponseEntity<List<PostsDetailResponseDto>> selectPostsByMusicId(@PathVariable("musicId") String musicId, @RequestParam("userId") Long userId, Long postId, @RequestParam("size") int pageSize) {
-        return ResponseEntity.ok(postsService.selectPostsByMusicId(musicId, userId, postId, pageSize));
+    public ResponseEntity<List<PostsDetailResponseDto>> selectPostsByMusicId(@PathVariable("musicId") String musicId, @RequestParam("sortType") PostsService.SortType sortType, Long postId, @RequestParam("size") int pageSize, @RequestParam("userId") Long userId) {
+        return ResponseEntity.ok(postsService.selectPostsByMusicId(musicId, sortType, postId, pageSize, userId));
     }
 
     @ApiOperation(value = "해당 유저 레코드 목록 불러오기", notes = "fromUserId는 지금 이용하고 있는 유저, toUserId는 레코드 목록을 불러오고 싶은 유저")
