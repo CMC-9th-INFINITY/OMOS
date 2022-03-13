@@ -1,5 +1,6 @@
 package com.infinity.omos.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TrackDto {
     private String musicId;
     private String musicTitle;

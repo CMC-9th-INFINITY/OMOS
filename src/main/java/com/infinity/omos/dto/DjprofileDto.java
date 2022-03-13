@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DjprofileDto {
     private CountDto count;
-    private MyDjDto profile;
+    private DjDto profile;
     private Boolean isFollowed;
 }

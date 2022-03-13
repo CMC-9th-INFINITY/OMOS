@@ -9,6 +9,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.infinity.omos.domain.Posts.QPosts.posts;
@@ -40,11 +43,11 @@ public class QueryRepository {
         return queryFactory.selectFrom(posts).where(posts.userId.eq(userId)).fetch();
     }
 
-    public List<Posts> findPublicPostsByUserId(User userId){
-        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId),posts.isPublic.eq(true)).fetch();
+    public List<Posts> findPublicPostsByUserId(User userId) {
+        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId), posts.isPublic.eq(true)).fetch();
     }
 
-    public List<Long> findPostsIdByUserId(User userId){
+    public List<Long> findPostsIdByUserId(User userId) {
         return queryFactory.select(posts.id).from(posts).where(posts.userId.eq(userId)).fetch();
     }
 
@@ -97,7 +100,9 @@ public class QueryRepository {
                 .fetch();
     }
 
-    public List<Posts> findAllMyDj(User userId,  Long postId, int pageSize){
+    ///여기부터 페이징처리 부분
+
+    public List<Posts> findAllMyDj(User userId, Long postId, int pageSize) {
         return queryFactory
                 .selectFrom(posts)
                 .innerJoin(follow).on(posts.userId.eq(follow.toUserId))
@@ -111,7 +116,20 @@ public class QueryRepository {
                 .fetch();
     }
 
-    public List<Posts> findAllByMusicId(Long postId, String musicId, int pageSize){
+    public List<Posts> findAllByMusicIdByRandom(Long postId, String musicId, int pageSize) {
+        return queryFactory
+                .selectFrom(posts)
+                .where(
+                        ltPostId(postId),
+                        posts.musicId.id.eq(musicId),
+                        posts.isPublic.eq(true))
+                .groupBy(posts.id)
+                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .limit(pageSize)
+                .fetch();
+    }
+
+    public List<Posts> findAllByMusicIdByCreatedDate(Long postId, String musicId, int pageSize) {
         return queryFactory
                 .selectFrom(posts)
                 .where(
@@ -124,21 +142,41 @@ public class QueryRepository {
                 .fetch();
     }
 
-    private BooleanExpression ltPostId(Long postId){
-        if(postId == null){
+    public List<Posts> findAllByMusicIdByLike(Long postId, String musicId, int pageSize) {
+        return queryFactory.selectFrom(posts)
+                .leftJoin(like).on(like.postId.eq(posts))
+                .where(
+                        ltPostIdByLike(postId),
+                        posts.musicId.id.eq(musicId)
+                        , posts.isPublic.eq(true))
+                .groupBy(posts.id)
+                .orderBy(like.id.count().desc())
+                .limit(pageSize)
+                .fetch();
+    }
+
+    private BooleanExpression ltPostId(Long postId) {
+        if (postId == null) {
             return null;
         }
         return posts.id.lt(postId);
     }
 
-    public List<Posts> findAllByCategoryOrderByLike(Category category, Long postId, int pageSize){
+    private BooleanExpression ltPostIdByLike(Long postId) {
+        if (postId == null) {
+            return null;
+        }
+        return like.id.count().lt(like.postId.id.eq(postId).count());
+    }
+
+    public List<Posts> findAllByCategoryOrderByLike(Category category, Long postId, int pageSize) {
 
         return queryFactory.selectFrom(posts)
-                .innerJoin(like).on(like.postId.eq(posts))
+                .leftJoin(like).on(like.postId.eq(posts))
                 .where(
-                        ltPostId(postId),
+                        ltPostIdByLike(postId),
                         posts.category.eq(category)
-                        ,posts.isPublic.eq(true))
+                        , posts.isPublic.eq(true))
                 .groupBy(posts.id)
                 .orderBy(like.id.count().desc())
                 .limit(pageSize)
@@ -146,7 +184,7 @@ public class QueryRepository {
 
     }
 
-    public List<Posts> findAllByCategoryOrderByRandom(Category category, Long postId, int pageSize){
+    public List<Posts> findAllByCategoryOrderByRandom(Category category, Long postId, int pageSize) {
 
         return queryFactory.selectFrom(posts)
                 .where(
@@ -159,7 +197,7 @@ public class QueryRepository {
 
     }
 
-    public List<Posts> findAllByCategoryOrderByViewsCount(Category category, Long postId, int pageSize){
+    public List<Posts> findAllByCategoryOrderByCreatedDate(Category category, Long postId, int pageSize) {
 
         return queryFactory.selectFrom(posts)
                 .where(
@@ -172,7 +210,56 @@ public class QueryRepository {
 
     }
 
+    ///여기까지 페이징처리부분
 
+
+    public String findMusicIdOnToday() {
+        LocalDateTime start = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime end = LocalDate.now().minusDays(1).atTime(LocalTime.MAX);
+        return queryFactory
+                .select(posts.musicId.id)
+                .from(posts)
+                .where(
+                        posts.createdDate.between(start, end)
+                )
+                .groupBy(posts.musicId)
+                .orderBy(posts.musicId.count().desc())
+                .fetchOne();
+    }
+
+    public List<Posts> findPostsOnToday() {
+        LocalDateTime start = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime end = LocalDate.now().minusDays(1).atTime(LocalTime.MAX);
+        return queryFactory.selectFrom(posts)
+                .leftJoin(like)
+                .on(posts.id.eq(like.postId.id))
+                .where(
+                        posts.createdDate.between(start, end),
+                        posts.isPublic.eq(true))
+                .groupBy(posts.id)
+                .orderBy(like.id.count().desc())
+                .limit(3)
+                .fetch();
+    }
+
+    public List<Long> findDjOnToday() {
+        LocalDateTime start = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime end = LocalDate.now().minusDays(1).atTime(LocalTime.MAX);
+        return queryFactory.select(follow.toUserId.id)
+                .from(follow)
+                .where(posts.createdDate.between(start, end))
+                .groupBy(follow.toUserId)
+                .orderBy(follow.toUserId.count().desc())
+                .fetch();
+    }
+
+    public Posts findPostByRandom() {
+        return queryFactory.selectFrom(posts)
+                .where(
+                        posts.isPublic.eq(true))
+                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .fetchOne();
+    }
 
 
 }

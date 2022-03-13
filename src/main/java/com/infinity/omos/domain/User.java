@@ -1,6 +1,6 @@
 package com.infinity.omos.domain;
 
-import com.infinity.omos.dto.MyDjDto;
+import com.infinity.omos.dto.DjDto;
 import com.infinity.omos.dto.SignUpDto;
 import com.infinity.omos.dto.SnsSignUpDto;
 import lombok.AllArgsConstructor;
@@ -57,8 +57,8 @@ public class User extends BaseTimeEntity{
 
     }
 
-    public MyDjDto toMyDjDto(){
-        return MyDjDto.builder()
+    public DjDto toMyDjDto(){
+        return DjDto.builder()
                 .userId(id)
                 .nickName(nickname)
                 .profileUrl(profileUrl)

@@ -4,7 +4,7 @@ import com.infinity.omos.domain.*;
 import com.infinity.omos.domain.Posts.PostsRepository;
 import com.infinity.omos.dto.CountDto;
 import com.infinity.omos.dto.DjprofileDto;
-import com.infinity.omos.dto.MyDjDto;
+import com.infinity.omos.dto.DjDto;
 import com.infinity.omos.dto.StateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class FollowService {
 
 
     @Transactional(readOnly = true)
-    public List<MyDjDto> selectMyDjList(Long userId) {
+    public List<DjDto> selectMyDjList(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
 
         return queryRepository.findToUserIdBYFromUserId(user)
@@ -65,7 +65,7 @@ public class FollowService {
 
         if (optionalUser.isPresent()) {
             User existedUser = optionalUser.get();
-            MyDjDto myDjDto = existedUser.toMyDjDto();
+            DjDto djDto = existedUser.toMyDjDto();
 
             return DjprofileDto.builder()
                     .count(CountDto.builder()
@@ -73,7 +73,7 @@ public class FollowService {
                             .followingCount(followRepository.countByFromUserId(existedUser))
                             .recordsCount(postsRepository.countByUserId(existedUser))
                             .build())
-                    .profile(myDjDto)
+                    .profile(djDto)
                     .isFollowed(queryRepository.existsFollowByUserId(
                             userRepository.getById(fromUserId), existedUser))
                     .build();

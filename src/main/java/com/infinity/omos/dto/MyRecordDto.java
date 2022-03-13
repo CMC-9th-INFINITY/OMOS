@@ -20,6 +20,6 @@ public class MyRecordDto {
     private LocalDateTime createdDate;
     private Boolean isPublic;
     private Category category;
-    private String recordImageUrl;
+    //private String recordImageUrl;
 
 }

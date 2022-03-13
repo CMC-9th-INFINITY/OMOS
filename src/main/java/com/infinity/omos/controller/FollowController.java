@@ -1,7 +1,7 @@
 package com.infinity.omos.controller;
 
 import com.infinity.omos.dto.DjprofileDto;
-import com.infinity.omos.dto.MyDjDto;
+import com.infinity.omos.dto.DjDto;
 import com.infinity.omos.dto.StateDto;
 import com.infinity.omos.service.FollowService;
 import io.swagger.annotations.Api;
@@ -34,7 +34,7 @@ public class FollowController {
 
     @ApiOperation(value = "Dj 리스트 목록", notes = "MyDj위에 동그랗게 있는 Dj 리스트 목록입니다!")
     @GetMapping("/select/myDj/{userId}")
-    public ResponseEntity<List<MyDjDto>> selectMyDjList(@PathVariable Long userId) {
+    public ResponseEntity<List<DjDto>> selectMyDjList(@PathVariable Long userId) {
         return ResponseEntity.ok(followService.selectMyDjList(userId));
     }
 

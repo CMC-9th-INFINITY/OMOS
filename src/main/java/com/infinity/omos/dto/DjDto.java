@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @NoArgsConstructor
-public class MyDjDto {
+public class DjDto {
     private Long userId;
     private String nickName;
     private String profileUrl;

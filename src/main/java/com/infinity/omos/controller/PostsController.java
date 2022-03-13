@@ -44,14 +44,14 @@ public class PostsController {
         return ResponseEntity.ok(postsService.plusViewsCnt(postId));
     }
 
-    @ApiOperation(value = "MY레코드 전체 불러오기(취소)", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
-    @GetMapping("/{userId}/cancel")
+    @ApiOperation(value = "MY레코드 전체 불러오기", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
+    @GetMapping("/{userId}")
     public ResponseEntity<List<MyRecordDto>> selectMyPosts(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(postsService.selectMyPosts(userId));
     }
 
-    @ApiOperation(value = "My레코드 전체 불러오기", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
-    @GetMapping("/{userId}")
+    @ApiOperation(value = "My레코드 전체 불러오기(취소)", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
+    @GetMapping("/{userId}/cancel")
     public ResponseEntity<List<PostsDetailResponseDto>> selectMyPost(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(postsService.selectMyPost(userId));
     }

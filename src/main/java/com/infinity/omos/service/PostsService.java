@@ -80,8 +80,8 @@ public class PostsService {
         List<PostsDetailResponseDto> postsDetailResponseDtos = new ArrayList<>();
         List<Posts> posts;
         switch (sortType) {
-            case viewsCount:
-                posts = queryRepository.findAllByCategoryOrderByViewsCount(category, postId, pageSize);
+            case date:
+                posts = queryRepository.findAllByCategoryOrderByCreatedDate(category, postId, pageSize);
                 break;
             case like:
                 posts = queryRepository.findAllByCategoryOrderByLike(category, postId, pageSize);
@@ -104,7 +104,7 @@ public class PostsService {
     }
 
     public enum SortType {
-        viewsCount, random, like
+        date, random, like
     }
 
     @Transactional
@@ -129,7 +129,7 @@ public class PostsService {
     }
 
 
-    MusicDto getMusicDto(TrackDto trackDto) {
+    static MusicDto getMusicDto(TrackDto trackDto) {
         return MusicDto.builder()
                 .musicId(trackDto.getMusicId())
                 .musicTitle(trackDto.getMusicTitle())
@@ -174,7 +174,6 @@ public class PostsService {
                             .recordTitle(post.getTitle())
                             .recordContents(post.getContents())
                             .recordId(post.getId())
-                            .recordImageUrl(post.getImageUrl())
                             .createdDate(post.getCreatedDate())
                             .category(post.getCategory())
                             .isPublic(post.getIsPublic())
@@ -232,11 +231,10 @@ public class PostsService {
     @Transactional
     public StateDto delete(Long postsId) {
         Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
-        if(scrapRepository.existsByPostId(posts)){
+        if (scrapRepository.existsByPostId(posts)) {
             scrapRepository.deleteAllByPostId(posts);
         }
-        if(likeRepository.existsByPostId(posts))
-        {
+        if (likeRepository.existsByPostId(posts)) {
             likeRepository.deleteAllByPostId(posts);
         }
 
@@ -245,19 +243,35 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostsDetailResponseDto> selectPostsByMusicId(String musicId, SortType sortType,  Long postId, int pageSize ,Long userId) {
+    public List<PostsDetailResponseDto> selectPostsByMusicId(String musicId, SortType sortType, Long postId, int pageSize, Long userId) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
-        List<Posts> postsList = queryRepository.findAllByMusicId(postId, musicId, pageSize); //이게 지금은 list를 다 받아와서 하는데 나중엔 하나씩받아와서 받아올때마다 dto만들고 의 반복으로 할 수 있을지 알아보자
 
         List<PostsDetailResponseDto> postsDetailResponseDtoList = new ArrayList<>();
-        if(postsList.isEmpty()){
+
+        List<Posts> posts; //이게 지금은 list를 다 받아와서 하는데 나중엔 하나씩받아와서 받아올때마다 dto만들고 의 반복으로 할 수 있을지 알아보자
+        switch (sortType) {
+            case date:
+                posts = queryRepository.findAllByMusicIdByCreatedDate(postId, musicId, pageSize);
+                break;
+            case like:
+                posts = queryRepository.findAllByMusicIdByLike(postId, musicId, pageSize);
+                break;
+            case random:
+                posts = queryRepository.findAllByMusicIdByRandom(postId, musicId, pageSize);
+                break;
+            default:
+                return postsDetailResponseDtoList;
+
+        }
+
+        if (posts.isEmpty()) {//밑에서 posts.get(0) 땨문에 미리 걸러야함.
             return postsDetailResponseDtoList;
         }
 
-        TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), postsList.get(0).getMusicId().getId());//어차피 같은 뮤직아이디라서 한번만 조회하고 다 넣어주는게 좋을듯
-        for (Posts post : postsList) {
+        TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), posts.get(0).getMusicId().getId());//어차피 같은 뮤직아이디라서 한번만 조회하고 다 넣어주는게 좋을듯
+        for (Posts post : posts) {
 
             PostsDetailResponseDto postsDetailResponseDto = getPostsDetailResponseDto(post, user, trackDto);
 
@@ -315,8 +329,12 @@ public class PostsService {
         Posts post = postsRepository.findById(postId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
 
         TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+        PostsDetailResponseDto postsDetailResponseDto = getPostsDetailResponseDto(post, user, trackDto);
+        if (user.getId().equals(post.getUserId().getId())) {
+            postsDetailResponseDto.setIsPublic(post.getIsPublic());
+        }
 
-        return getPostsDetailResponseDto(post, user, trackDto);
+        return postsDetailResponseDto;
     }
 
 
