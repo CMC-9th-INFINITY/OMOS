@@ -40,7 +40,7 @@ public class QueryRepository {
     }
 
     public List<Posts> findPostsByUserId(User userId) {
-        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId)).fetch();
+        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId)).orderBy(posts.id.desc()).fetch();
     }
 
     public List<Posts> findPublicPostsByUserId(User userId) {
@@ -224,7 +224,7 @@ public class QueryRepository {
                 )
                 .groupBy(posts.musicId)
                 .orderBy(posts.musicId.count().desc())
-                .fetchOne();
+                .fetchFirst();
     }
 
     public List<Posts> findPostsOnToday() {
@@ -247,9 +247,10 @@ public class QueryRepository {
         LocalDateTime end = LocalDate.now().minusDays(1).atTime(LocalTime.MAX);
         return queryFactory.select(follow.toUserId.id)
                 .from(follow)
-                .where(posts.createdDate.between(start, end))
+                .where(follow.createdDate.between(start, end))
                 .groupBy(follow.toUserId)
                 .orderBy(follow.toUserId.count().desc())
+                .limit(3)
                 .fetch();
     }
 
@@ -258,7 +259,7 @@ public class QueryRepository {
                 .where(
                         posts.isPublic.eq(true))
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
-                .fetchOne();
+                .fetchFirst();
     }
 
 

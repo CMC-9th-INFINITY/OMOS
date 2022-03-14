@@ -30,15 +30,17 @@ public class TodayService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public MusicDto musicOfToday(){
+    public MusicDto musicOfToday() {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
         String musicId = queryRepository.findMusicIdOnToday();
-
-        return getMusicDto(SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(),musicId));
+        if (musicId == null) {
+            return null;
+        }
+        return getMusicDto(SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), musicId));
     }
 
     @Transactional(readOnly = true)
-    public List<PostsResponseDto> famousRecordsOfToday(){
+    public List<PostsResponseDto> famousRecordsOfToday() {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
         List<Posts> postsList = queryRepository.findPostsOnToday();
         List<PostsResponseDto> postsResponseDtos = new ArrayList<>(); //이부분 지금postservice에 한 부분이랑 겹침 그래서 나중에 고도화때 따로빼서 사용하던가 암튼 그러는게 좋을것같음 뭔가 따로 이렇게 dto에 정보 조합하는 클래스를 따로 만들어도 될것같음~
@@ -68,9 +70,9 @@ public class TodayService {
     }
 
     @Transactional(readOnly = true)
-    public List<DjDto> recommendedDjOnToday(){
+    public List<DjDto> recommendedDjOnToday() {
         List<DjDto> djDtoList = new ArrayList<>();
-        for (Long userId : queryRepository.findDjOnToday()){
+        for (Long userId : queryRepository.findDjOnToday()) { //이부분 null나오면 for문안돌고 넘어갈지 모르겟네
             User user = userRepository.getById(userId);
             djDtoList.add(
                     DjDto.builder()
@@ -84,16 +86,16 @@ public class TodayService {
     }
 
     @Transactional(readOnly = true)
-    public Object randomPostOnToday(){
+    public Object randomPostOnToday() {
         Posts post = queryRepository.findPostByRandom();
 
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-        MusicDto musicDto = getMusicDto(SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(),post.getMusicId().getId()));
+        MusicDto musicDto = getMusicDto(SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId()));
 
-        HashMap<String,Object> record = new HashMap<>();
-        record.put("recordImageUrl",post.getImageUrl());
-        record.put("recordId",post.getId());
-        record.put("music",musicDto);
+        HashMap<String, Object> record = new HashMap<>();
+        record.put("recordImageUrl", post.getImageUrl());
+        record.put("recordId", post.getId());
+        record.put("music", musicDto);
 
         return record;
     }
