@@ -144,14 +144,18 @@ public class QueryRepository {
     }
 
     public List<Posts> findAllByMusicIdByLike(Long postId, String musicId, int pageSize) {
+        Long cnt = findLikeCount(postId);
+
         return queryFactory.selectFrom(posts)
                 .leftJoin(like).on(like.postId.eq(posts))
                 .where(
-                        ltPostIdByLike(postId),
                         posts.musicId.id.eq(musicId)
                         , posts.isPublic.eq(true))
                 .groupBy(posts.id)
-                .orderBy(like.id.count().desc())
+                .having(
+                        ltPostIdByLike(postId,cnt)
+                )
+                .orderBy(like.id.count().desc(),posts.id.desc())
                 .limit(pageSize)
                 .fetch();
     }
@@ -163,27 +167,49 @@ public class QueryRepository {
         return posts.id.lt(postId);
     }
 
-    private BooleanExpression ltPostIdByLike(Long postId) {
+    private BooleanExpression ltPostIdByLike(Long postId , Long cnt) {
         if (postId == null) {
             return null;
         }
-        return like.id.count().lt(like.postId.id.eq(postId).count());
+        return  (like.id.count().eq(cnt).and(posts.id.lt(postId)))
+                .or(like.id.count().lt(cnt));
     }
 
     public List<Posts> findAllByCategoryOrderByLike(Category category, Long postId, int pageSize) {
+        Long cnt = findLikeCount(postId);
 
         return queryFactory.selectFrom(posts)
                 .leftJoin(like).on(like.postId.eq(posts))
                 .where(
-                        ltPostIdByLike(postId),
                         posts.category.eq(category)
                         , posts.isPublic.eq(true))
                 .groupBy(posts.id)
-                .orderBy(like.id.count().desc())
+                .having(
+                        ltPostIdByLike(postId,cnt)
+                )
+                .orderBy(like.id.count().desc(),posts.id.desc())
                 .limit(pageSize)
                 .fetch();
 
     }
+
+    private Long findLikeCount(Long postId){
+        return queryFactory
+                .select(like.id.count())
+                .from(posts)
+                .leftJoin(like)
+                .on(like.postId.eq(posts))
+                .where(isPostId(postId))
+                .fetchOne();
+    }
+
+    private BooleanExpression isPostId(Long postId) {
+        if (postId == null) {
+            return null;
+        }
+        return posts.id.eq(postId);
+    }
+
 
     public List<Posts> findAllByCategoryOrderByRandom(Category category, Long postId, int pageSize) {
 
