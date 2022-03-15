@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class PostsUpdateDto {
     private String title;
     private String contents;
+    private Boolean isPublic;
+    private String recordImageUrl;
 }

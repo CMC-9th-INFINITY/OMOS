@@ -8,6 +8,7 @@ import com.infinity.omos.domain.Posts.PostsRepository;
 import com.infinity.omos.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,7 +75,7 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, SortType sortType, Long postId, int pageSize, Long userId) {
+    public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, SortType sortType, Long postId, int page ,int pageSize, Long userId) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
         List<PostsDetailResponseDto> postsDetailResponseDtos = new ArrayList<>();
@@ -84,7 +85,8 @@ public class PostsService {
                 posts = queryRepository.findAllByCategoryOrderByCreatedDate(category, postId, pageSize);
                 break;
             case like:
-                posts = queryRepository.findAllByCategoryOrderByLike(category, postId, pageSize);
+                Pageable pageable = PageRequest.of(page,pageSize);
+                posts = postsRepository.findAllByCategoryOrderByLike(category, pageable);
                 break;
             case random:
                 posts = queryRepository.findAllByCategoryOrderByRandom(category, postId, pageSize);
@@ -221,7 +223,7 @@ public class PostsService {
     @Transactional
     public HashMap<String, Long> update(Long postsId, PostsUpdateDto postsUpdateDto) {
         Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
-        posts.updatePosts(postsUpdateDto.getTitle(), postsUpdateDto.getContents());
+        posts.updatePosts(postsUpdateDto);
 
         HashMap<String, Long> postId = new HashMap<>();
         postId.put("postId", postsRepository.save(posts).getId());

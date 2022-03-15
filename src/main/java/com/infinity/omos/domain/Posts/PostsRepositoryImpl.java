@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import static com.infinity.omos.domain.Posts.QPosts.posts;
+import static com.infinity.omos.domain.QLike.like;
 
 @RequiredArgsConstructor
 public class PostsRepositoryImpl implements PostsRepositoryCustom {
@@ -28,7 +29,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
                 .where(posts.category.eq(category),posts.isPublic.eq(true))
                 .offset(pageable.getOffset())   //N 번부터 시작
                 .limit(pageable.getPageSize()) //조회 갯수
-                .orderBy(postsSort(pageable))
+                .orderBy()
                 .fetchResults();
         long total = results.getTotal();
 
@@ -57,6 +58,24 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom {
         return null;
     }
 
+
+    @Override
+    public Page<Posts> findAllByCategoryOrderByLike(Category category, Pageable pageable){
+        QueryResults<Posts> results =     queryFactory.selectFrom(posts)
+                .leftJoin(like).on(like.postId.eq(posts))
+                .where(
+                        posts.category.eq(category)
+                        , posts.isPublic.eq(true))
+                .groupBy(posts.id)
+                .orderBy(like.id.count().desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+        long total = results.getTotal();
+
+        List<Posts> posts = results.getResults();
+        return new PageImpl<>(posts,pageable,total);
+    }
 
 
 

@@ -4,6 +4,7 @@ import com.infinity.omos.domain.BaseTimeEntity;
 import com.infinity.omos.domain.Category;
 import com.infinity.omos.domain.Music;
 import com.infinity.omos.domain.User;
+import com.infinity.omos.dto.PostsUpdateDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,9 +55,11 @@ public class Posts extends BaseTimeEntity {
         this.isPublic = !this.isPublic;
     }
 
-    public void updatePosts(String title, String contents){
-        this.title = title;
-        this.contents = contents;
+    public void updatePosts(PostsUpdateDto postsUpdateDto){
+        this.title = postsUpdateDto.getTitle();
+        this.contents = postsUpdateDto.getContents();
+        this.imageUrl = postsUpdateDto.getRecordImageUrl();
+        this.isPublic = postsUpdateDto.getIsPublic();
     }
 
 }

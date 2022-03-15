@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -43,8 +44,8 @@ public class TodayController {
     }
 
     @ApiOperation(value = "내가 사랑했던 노래")
-    @GetMapping("/music-loved")
-    public ResponseEntity<Object> musicILoved(){
-        return ResponseEntity.ok(todayService.randomPostOnToday());
+    @GetMapping("/music-loved/{userId}")
+    public ResponseEntity<Object> musicILoved(@PathVariable Long userId){
+        return ResponseEntity.ok(todayService.randomPostOnToday(userId));
     }
 }

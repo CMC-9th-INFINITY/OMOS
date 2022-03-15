@@ -97,6 +97,7 @@ public class QueryRepository {
         return queryFactory.select(follow.toUserId)
                 .from(follow)
                 .where(follow.fromUserId.eq(fromUserId))
+                .orderBy(posts.createdDate.max().desc())
                 .fetch();
     }
 
@@ -254,10 +255,12 @@ public class QueryRepository {
                 .fetch();
     }
 
-    public Posts findPostByRandom() {
+    public Posts findPostByRandom(Long userId) {
         return queryFactory.selectFrom(posts)
                 .where(
-                        posts.isPublic.eq(true))
+                        posts.isPublic.eq(true),
+                        posts.userId.id.eq(userId)
+                )
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .fetchFirst();
     }
