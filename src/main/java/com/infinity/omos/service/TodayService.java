@@ -88,9 +88,9 @@ public class TodayService {
     @Transactional(readOnly = true)
     public Object randomPostOnToday(Long userId) {
         Posts post = queryRepository.findPostByRandom(userId);
-//        if(post==null){
-//            return new ArrayList<>();
-//        }
+        if(post==null){
+            throw new RuntimeException("해당 레코드가 없습니다");
+        }
 
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
         MusicDto musicDto = getMusicDto(SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId()));

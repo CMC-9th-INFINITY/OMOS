@@ -5,6 +5,7 @@ import com.infinity.omos.domain.Posts.Posts;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -294,6 +295,40 @@ public class QueryRepository {
                 )
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .fetchFirst();
+    }
+
+    public List<Posts> findScrapedPostsByUserId(User userId, Integer size){
+        JPAQuery<Posts> jpaQuery = queryFactory.selectFrom(posts)
+                .innerJoin(scrap).on(posts.id.eq(scrap.postId.id))
+                .where(
+                        posts.isPublic.eq(true),
+                        scrap.userId.eq(userId)
+                );
+
+        if(size == null){
+            return jpaQuery.fetch();
+        }
+        else{
+            return jpaQuery.limit(size).fetch();
+        }
+
+    }
+
+    public List<Posts> findLikedPostsByUserId(User userId, Integer size){
+        JPAQuery<Posts> jpaQuery = queryFactory.selectFrom(posts)
+                .innerJoin(like).on(posts.id.eq(like.postId.id))
+                .where(
+                        posts.isPublic.eq(true),
+                        like.userId.eq(userId)
+                );
+
+        if(size == null){
+            return jpaQuery.fetch();
+        }
+        else{
+            return jpaQuery.limit(size).fetch();
+        }
+
     }
 
 

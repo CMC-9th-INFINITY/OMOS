@@ -127,5 +127,14 @@ public class AuthService {
         return tokenDto;
     }
 
+    @Transactional
+    public StateDto logout(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        RefreshToken refreshToken = refreshTokenRepository.findByUserEmail(user.getEmail())
+                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+        refreshTokenRepository.delete(refreshToken);
+        return StateDto.builder().state(true).build();
+    }
+
 
 }

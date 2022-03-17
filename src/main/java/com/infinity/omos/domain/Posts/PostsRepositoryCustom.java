@@ -10,4 +10,5 @@ public interface PostsRepositoryCustom {
     Page<Posts> findAllByCategory(Category category, Pageable pageable);
     //List<Posts> findAllByMusicId(Long postId, String musicId, int pageSize);
     Page<Posts> findAllByCategoryOrderByLike(Category category, Pageable pageable);
+
 }

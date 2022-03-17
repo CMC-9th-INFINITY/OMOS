@@ -168,20 +168,28 @@ public class PostsService {
         for (Posts post : posts) {
             TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
             myRecordDtos.add(
-                    MyRecordDto.builder()
-                            .music(getMusicDto(trackDto))
-                            .recordTitle(post.getTitle())
-                            .recordContents(post.getContents())
-                            .recordId(post.getId())
-                            .createdDate(post.getCreatedDate())
-                            .category(post.getCategory())
-                            .isPublic(post.getIsPublic())
-                            .build()
-
+                    postToMyRecordDto(trackDto,post, true)
             );
 
         }
         return myRecordDtos;
+    }
+
+    private MyRecordDto postToMyRecordDto(TrackDto trackDto,Posts post , Boolean isPublic){ //true면 isPublic 필요한 거고 false면 필요없음
+
+        MyRecordDto myRecordDto = MyRecordDto.builder()
+                .music(getMusicDto(trackDto))
+                .recordTitle(post.getTitle())
+                .recordContents(post.getContents())
+                .recordId(post.getId())
+                .createdDate(post.getCreatedDate())
+                .category(post.getCategory())
+                .isPublic(post.getIsPublic())
+                .build();
+        if(isPublic){
+            myRecordDto.setIsPublic(post.getIsPublic());
+        }
+        return myRecordDto;
     }
 
     @Transactional(readOnly = true)
@@ -272,9 +280,7 @@ public class PostsService {
         TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), posts.get(0).getMusicId().getId());//어차피 같은 뮤직아이디라서 한번만 조회하고 다 넣어주는게 좋을듯
         for (Posts post : posts) {
 
-            PostsDetailResponseDto postsDetailResponseDto = getPostsDetailResponseDto(post, user, trackDto);
-
-            postsDetailResponseDtoList.add(postsDetailResponseDto);
+            postsDetailResponseDtoList.add(getPostsDetailResponseDto(post, user, trackDto));
 
         }
         return postsDetailResponseDtoList;
@@ -335,6 +341,81 @@ public class PostsService {
 
         return postsDetailResponseDto;
     }
+
+    @Transactional
+    public Object selectPostsByUserIdOnMyPage(Long userId){
+        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+
+        HashMap<String ,Object> records = new HashMap<>();
+        records.put("scrappedRecords",postToRecordList(queryRepository.findScrapedPostsByUserId(user,2),spotifyApi));
+        records.put("likedRecords",postToRecordList(queryRepository.findLikedPostsByUserId(user,2),spotifyApi));
+
+        return records;
+
+    }
+
+    private Object postToRecordList(List<Posts>postsList, SpotifyApi spotifyApi){
+        List<Object> objects = new ArrayList<>();
+
+        for(Posts post : postsList){
+
+
+            TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+            MusicDto musicDto = getMusicDto(trackDto);
+
+            HashMap<String ,Object> record = new HashMap<>();
+            record.put("recordTitle",post.getTitle());
+            record.put("recordImageUrl",post.getImageUrl());
+            record.put("recordId",post.getId());
+            record.put("music",musicDto);
+
+
+            objects.add(record);
+        }
+        return objects;
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<MyRecordDto> selectScrappedPosts(Long userId){  //나중에 아래 겹친 부분 따로 모아야 하나 생각중...
+        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        List<Posts> posts = queryRepository.findScrapedPostsByUserId(user,null);
+
+        List<MyRecordDto> myRecordDtos = new ArrayList<>();
+        for (Posts post : posts) {
+            TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+            myRecordDtos.add(
+                    postToMyRecordDto(trackDto,post,false)
+            );
+
+        }
+        return myRecordDtos;
+    }
+
+    @Transactional(readOnly = true)
+    public List<MyRecordDto> selectLikedPosts(Long userId){
+        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        List<Posts> posts = queryRepository.findLikedPostsByUserId(user,null);
+
+        List<MyRecordDto> myRecordDtos = new ArrayList<>();
+        for (Posts post : posts) {
+            TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
+            myRecordDtos.add(
+                    postToMyRecordDto(trackDto,post,false)
+            );
+        }
+        return myRecordDtos;
+    }
+
+
+
+
 
 
 }

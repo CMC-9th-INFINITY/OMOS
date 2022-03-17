@@ -14,7 +14,7 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Api(tags = {"온보딩"})
+@Api(tags = {"계정API"})
 public class  AuthController {
     private final AuthService authService;
 
@@ -54,5 +54,6 @@ public class  AuthController {
     public ResponseEntity<TokenDto> snsLogin(@Valid @RequestBody SnsLoginDto snsLoginDto){
         return ResponseEntity.ok(authService.snsLogin(snsLoginDto));
     }
+
 
 }

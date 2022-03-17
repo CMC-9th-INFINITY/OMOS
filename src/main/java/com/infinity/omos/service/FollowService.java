@@ -3,8 +3,8 @@ package com.infinity.omos.service;
 import com.infinity.omos.domain.*;
 import com.infinity.omos.domain.Posts.PostsRepository;
 import com.infinity.omos.dto.CountDto;
-import com.infinity.omos.dto.DjprofileDto;
 import com.infinity.omos.dto.DjDto;
+import com.infinity.omos.dto.DjprofileDto;
 import com.infinity.omos.dto.StateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class FollowService {
 
     @Transactional
     public StateDto save(Long fromUserId, Long toUserId) {
-        if(fromUserId.equals(toUserId)){
+        if (fromUserId.equals(toUserId)) {
             throw new RuntimeException("자신은 팔로우할 수 없습니다");
         }
         User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
@@ -70,25 +70,26 @@ public class FollowService {
             User existedUser = optionalUser.get();
             DjDto djDto = existedUser.toMyDjDto();
 
-            return DjprofileDto.builder()
+            DjprofileDto djprofileDto = DjprofileDto.builder()
                     .count(CountDto.builder()
                             .followerCount(followRepository.countByToUserId(existedUser))
                             .followingCount(followRepository.countByFromUserId(existedUser))
                             .recordsCount(postsRepository.countByUserId(existedUser))
                             .build())
                     .profile(djDto)
-                    .isFollowed(queryRepository.existsFollowByUserId(
-                            userRepository.getById(fromUserId), existedUser))
                     .build();
+
+            if (!toUserId.equals(fromUserId)) {
+                djprofileDto.setIsFollowed(queryRepository.existsFollowByUserId(
+                        userRepository.getById(fromUserId), existedUser));
+            }
+            return djprofileDto;
 
         } else {
             throw new RuntimeException("해당 유저는 존재하지 않는 유저입니다.");
         }
 
     }
-
-
-
 
 
 }

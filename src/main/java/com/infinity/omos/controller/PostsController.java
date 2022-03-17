@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,5 +97,23 @@ public class PostsController {
     @GetMapping("/select/{postId}/user/{userId}")
     public ResponseEntity<PostsDetailResponseDto> selectPost(@PathVariable("userId") Long userId, @PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postsService.selectPostById(postId, userId));
+    }
+
+    @ApiOperation(value = "My페이지 레코드들",notes = "스크랩한 레코드 2개, 좋아요한 레코드 2개나오는 부분입니다~")
+    @GetMapping("/select/{userId}/my-recods")
+    public ResponseEntity<Object> selectPostsByUserIdOnMyPage(@PathVariable Long userId){
+        return ResponseEntity.ok(postsService.selectPostsByUserIdOnMyPage(userId));
+    }
+
+    @ApiOperation(value = "스크랩레코드들 목록")
+    @GetMapping("/select/{userId}/scrapped-records")
+    public ResponseEntity<List<MyRecordDto>> selectLikedPosts(@PathVariable Long userId){
+        return ResponseEntity.ok(postsService.selectLikedPosts(userId));
+    }
+
+    @ApiOperation(value = "좋아요레코드들 목록")
+    @GetMapping("/select/{userId}/liked-records")
+    public ResponseEntity<List<MyRecordDto>> selectScrappedPosts(@PathVariable Long userId){
+        return ResponseEntity.ok(postsService.selectScrappedPosts(userId));
     }
 }

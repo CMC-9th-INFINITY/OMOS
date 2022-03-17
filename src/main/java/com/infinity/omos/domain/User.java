@@ -3,6 +3,7 @@ package com.infinity.omos.domain;
 import com.infinity.omos.dto.DjDto;
 import com.infinity.omos.dto.SignUpDto;
 import com.infinity.omos.dto.SnsSignUpDto;
+import com.infinity.omos.dto.UserRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,6 +64,16 @@ public class User extends BaseTimeEntity{
                 .nickName(nickname)
                 .profileUrl(profileUrl)
                 .build();
+    }
+
+    public void updateProfile(UserRequestDto userRequestDto){
+        this.profileUrl= userRequestDto.getProfileUrl();
+        this.nickname = userRequestDto.getNickname();
+
+    }
+
+    public void updatePassword(String password , PasswordEncoder passwordEncoder){
+        this.password = passwordEncoder.encode(password);
     }
 }
 
