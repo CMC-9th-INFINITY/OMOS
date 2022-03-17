@@ -88,6 +88,9 @@ public class TodayService {
     @Transactional(readOnly = true)
     public Object randomPostOnToday(Long userId) {
         Posts post = queryRepository.findPostByRandom(userId);
+//        if(post==null){
+//            return new ArrayList<>();
+//        }
 
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
         MusicDto musicDto = getMusicDto(SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId()));

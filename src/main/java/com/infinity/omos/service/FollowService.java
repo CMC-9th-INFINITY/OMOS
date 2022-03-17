@@ -24,6 +24,9 @@ public class FollowService {
 
     @Transactional
     public StateDto save(Long fromUserId, Long toUserId) {
+        if(fromUserId.equals(toUserId)){
+            throw new RuntimeException("자신은 팔로우할 수 없습니다");
+        }
         User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         if (queryRepository.existsFollowByUserId(fromUser, toUser)) {

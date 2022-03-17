@@ -96,7 +96,9 @@ public class QueryRepository {
     public List<User> findToUserIdBYFromUserId(User fromUserId) {
         return queryFactory.select(follow.toUserId)
                 .from(follow)
+                .innerJoin(posts).on(posts.userId.eq(follow.toUserId))
                 .where(follow.fromUserId.eq(fromUserId))
+                .groupBy(posts.userId)
                 .orderBy(posts.createdDate.max().desc())
                 .fetch();
     }
@@ -282,6 +284,9 @@ public class QueryRepository {
     }
 
     public Posts findPostByRandom(Long userId) {
+        if(userId == null){
+            return null;
+        }
         return queryFactory.selectFrom(posts)
                 .where(
                         posts.isPublic.eq(true),
