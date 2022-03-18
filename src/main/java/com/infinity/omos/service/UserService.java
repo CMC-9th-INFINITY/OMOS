@@ -2,6 +2,7 @@ package com.infinity.omos.service;
 
 import com.infinity.omos.domain.User;
 import com.infinity.omos.domain.UserRepository;
+import com.infinity.omos.dto.PasswordDto;
 import com.infinity.omos.dto.StateDto;
 import com.infinity.omos.dto.UserRequestDto;
 import com.infinity.omos.dto.UserResponseDto;
@@ -35,9 +36,11 @@ public class UserService {
     }
 
     @Transactional
-    public StateDto updatePassword(Long userId, String password , PasswordEncoder passwordEncoder){
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
-        user.updatePassword(password,passwordEncoder);
+    public StateDto updatePassword(PasswordDto passwordDto){
+        User user = userRepository.findById(passwordDto.getUserId()).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        user.updatePassword(passwordDto.getPassword(),passwordEncoder);
         return StateDto.builder().state(true).build();
     }
+
+
 }

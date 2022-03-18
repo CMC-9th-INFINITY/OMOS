@@ -55,5 +55,11 @@ public class  AuthController {
         return ResponseEntity.ok(authService.snsLogin(snsLoginDto));
     }
 
+    @ApiOperation(value = "로그아웃",notes = "클라쪽에서 가지고 계시는 access, refresh Token 모두 삭제해주셔야합니다!! 꼭!")
+    @DeleteMapping("/logout/{userId}")
+    public ResponseEntity<StateDto> logout(@PathVariable Long userId){
+        return ResponseEntity.ok(authService.logout(userId));
+    }
+
 
 }

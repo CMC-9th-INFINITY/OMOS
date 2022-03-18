@@ -136,5 +136,10 @@ public class AuthService {
         return StateDto.builder().state(true).build();
     }
 
+    @Transactional
+    public void signOut(Long userId){
+
+    }
+
 
 }
