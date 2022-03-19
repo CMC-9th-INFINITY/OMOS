@@ -65,7 +65,7 @@ public class PostsController {
 
     @ApiOperation(value = "레코드 수정", notes = "제목,내용 둘 다 보내주세요")
     @PutMapping("/update/{postId}")
-    public ResponseEntity<HashMap<String, Long>> updatePosts(@PathVariable("postId") Long postId, @RequestBody PostsUpdateDto postsUpdateDto) {
+    public ResponseEntity<StateDto> updatePosts(@PathVariable("postId") Long postId, @RequestBody PostsUpdateDto postsUpdateDto) {
         return ResponseEntity.ok(postsService.update(postId, postsUpdateDto));
     }
 
