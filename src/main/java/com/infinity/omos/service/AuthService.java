@@ -25,12 +25,12 @@ public class AuthService {
     @Transactional(readOnly = true)
     public StateDto checkDuplicatedEmail(String email) {
         return StateDto.builder()
-                .state(!userRepository.existsByEmail(email)).build();
+                .state(userRepository.existsByEmail(email)).build();
     }
 
     @Transactional
     public TokenDto login(LoginDto loginDto) {
-        if (!userRepository.existsByEmail(loginDto.getEmail())) {
+        if (userRepository.existsByEmail(loginDto.getEmail()) || !userRepository.existsByPassword(passwordEncoder.encode(loginDto.getPassword()))) {
             throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
         }
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication(); // ID/PW로 AuthenticationToken 생성
@@ -102,7 +102,7 @@ public class AuthService {
 
     @Transactional
     public TokenDto snsLogin(SnsLoginDto snsLoginDto) {
-        if (!userRepository.existsByEmail(snsLoginDto.getEmail())) {
+        if (userRepository.existsByEmail(snsLoginDto.getEmail())) {
             throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
         }
         UsernamePasswordAuthenticationToken authenticationToken = snsLoginDto.toAuthentication(); // ID/PW로 AuthenticationToken 생성

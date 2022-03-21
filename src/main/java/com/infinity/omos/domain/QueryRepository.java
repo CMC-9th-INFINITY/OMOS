@@ -45,7 +45,7 @@ public class QueryRepository {
     }
 
     public List<Posts> findPublicPostsByUserId(User userId) {
-        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId), posts.isPublic.eq(true)).fetch();
+        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId), posts.isPublic.eq(true)).orderBy(posts.id.desc()).fetch();
     }
 
     public List<Long> findPostsIdByUserId(User userId) {
@@ -303,7 +303,9 @@ public class QueryRepository {
                 .where(
                         posts.isPublic.eq(true),
                         scrap.userId.eq(userId)
-                );
+                )
+                .orderBy(scrap.createdDate.desc())
+                ;
 
         if(size == null){
             return jpaQuery.fetch();
@@ -320,7 +322,8 @@ public class QueryRepository {
                 .where(
                         posts.isPublic.eq(true),
                         like.userId.eq(userId)
-                );
+                )
+                .orderBy(like.createdDate.desc());
 
         if(size == null){
             return jpaQuery.fetch();

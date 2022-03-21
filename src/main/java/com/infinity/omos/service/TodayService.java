@@ -77,7 +77,7 @@ public class TodayService {
             djDtoList.add(
                     DjDto.builder()
                             .userId(userId)
-                            .nickName(user.getNickname())
+                            .nickname(user.getNickname())
                             .profileUrl(user.getProfileUrl())
                             .build()
             );

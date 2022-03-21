@@ -61,7 +61,7 @@ public class User extends BaseTimeEntity{
     public DjDto toMyDjDto(){
         return DjDto.builder()
                 .userId(id)
-                .nickName(nickname)
+                .nickname(nickname)
                 .profileUrl(profileUrl)
                 .build();
     }

@@ -124,6 +124,9 @@ public class PostsService {
     public StateDto plusViewsCnt(Long postsId) {
         Posts posts = postsRepository.findById(postsId).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
         posts.updateCnt();
+        if(posts.getCnt() == 5){
+            return delete(postsId);
+        }
         return StateDto.builder().state(true).build();
     }
 

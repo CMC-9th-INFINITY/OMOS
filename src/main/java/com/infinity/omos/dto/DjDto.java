@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DjDto {
     private Long userId;
-    private String nickName;
+    private String nickname;
     private String profileUrl;
 }

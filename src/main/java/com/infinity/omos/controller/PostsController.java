@@ -39,8 +39,8 @@ public class PostsController {
         return ResponseEntity.ok(postsService.save(postsRequestDto));
     }
 
-    @ApiOperation(value = "레코드 조회수 상승", notes = "return값으로 레코드 업데이트된 조회수 필요하거나 암튼 리턴값 필요하신거있으시면 말씀해주세요! 지금은 딱히 필요한거 있는지 몰라서 나뒀어요")
-    @PutMapping("/{postId}")
+    @ApiOperation(value = "레코드 신고수 상승", notes = "역시 다 놔두면 어디에 쓰이나봐요 호호 조회가 신고로 바뀌었습니다~ 신고수가 5가 되면 post삭제됩니다~")
+    @PutMapping("/{postId}/report")
     public ResponseEntity<StateDto> plusViews(@PathVariable("postId") Long postId) {
         return ResponseEntity.ok(postsService.plusViewsCnt(postId));
     }
@@ -100,19 +100,19 @@ public class PostsController {
     }
 
     @ApiOperation(value = "My페이지 레코드들",notes = "스크랩한 레코드 2개, 좋아요한 레코드 2개나오는 부분입니다~")
-    @GetMapping("/select/{userId}/my-recods")
+    @GetMapping("/select/{userId}/my-records")
     public ResponseEntity<Object> selectPostsByUserIdOnMyPage(@PathVariable Long userId){
         return ResponseEntity.ok(postsService.selectPostsByUserIdOnMyPage(userId));
     }
 
-    @ApiOperation(value = "스크랩레코드들 목록")
-    @GetMapping("/select/{userId}/scrapped-records")
+    @ApiOperation(value = "좋아요레코드들 목록")
+    @GetMapping("/select/{userId}/liked-records")
     public ResponseEntity<List<MyRecordDto>> selectLikedPosts(@PathVariable Long userId){
         return ResponseEntity.ok(postsService.selectLikedPosts(userId));
     }
 
-    @ApiOperation(value = "좋아요레코드들 목록")
-    @GetMapping("/select/{userId}/liked-records")
+    @ApiOperation(value = "스크랩레코드들 목록")
+    @GetMapping("/select/{userId}/scrapped-records")
     public ResponseEntity<List<MyRecordDto>> selectScrappedPosts(@PathVariable Long userId){
         return ResponseEntity.ok(postsService.selectScrappedPosts(userId));
     }

@@ -29,8 +29,11 @@ public class UserService {
     }
 
     @Transactional
-    public StateDto updateUserProfile(UserRequestDto userRequestDto){
+    public StateDto updateUserProfile(UserRequestDto userRequestDto, boolean nicknameCheck){
         User user = userRepository.findById(userRequestDto.getUserId()).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        if(!user.getNickname().equals(userRequestDto.getNickname()) && !nicknameCheck){ //해당 유저의 닉네임이 아닌데, 닉네임이 중복이다? 땡!
+            return StateDto.builder().state(false).build();
+        }
         user.updateProfile(userRequestDto);
         return StateDto.builder().state(true).build();
     }
