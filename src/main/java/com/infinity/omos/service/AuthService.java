@@ -25,14 +25,14 @@ public class AuthService {
     @Transactional(readOnly = true)
     public StateDto checkDuplicatedEmail(String email) {
         return StateDto.builder()
-                .state(userRepository.existsByEmail(email)).build();
+                .state(!userRepository.existsByEmail(email)).build();
     }
 
     @Transactional
     public TokenDto login(LoginDto loginDto) {
-        if (userRepository.existsByEmail(loginDto.getEmail()) || !userRepository.existsByPassword(passwordEncoder.encode(loginDto.getPassword()))) {
-            throw new RuntimeException("해당하는 유저가 존재하지 않습니다");
-        }
+        User user = userRepository.findByEmail(loginDto.getEmail()).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+
+
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication(); // ID/PW로 AuthenticationToken 생성
         return createToken(authenticationToken);
     }
@@ -112,6 +112,7 @@ public class AuthService {
     @Transactional
     public TokenDto createToken(UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuthenticationToken);// 사용자 비밀번호 체크, CustomUserDetailsService에서의 loadUserByUsername 메서드가 실행됨
+
         SecurityContextHolder.getContext().setAuthentication(authentication);//securityContext에 저장
 
         String email = authentication.getName();

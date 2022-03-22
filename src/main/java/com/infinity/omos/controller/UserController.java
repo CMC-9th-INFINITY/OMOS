@@ -31,8 +31,7 @@ public class UserController {
     @ApiOperation(value = "내 프로필 수정 API")
     @PutMapping("/update/profile")
     public ResponseEntity<StateDto> updateUserProfile(@RequestBody UserRequestDto userRequestDto){
-        boolean nicknameCheck = authService.checkDuplicatedEmail(userRequestDto.getNickname()).isState();
-        return ResponseEntity.ok(userService.updateUserProfile(userRequestDto,nicknameCheck));
+        return ResponseEntity.ok(userService.updateUserProfile(userRequestDto));
     }
 
     @ApiOperation(value = "비밀번호 변경 API")
