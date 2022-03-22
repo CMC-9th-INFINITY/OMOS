@@ -7,6 +7,7 @@ public interface ScrapRepository extends JpaRepository<Scrap,Long> {
     boolean existsByPostId(Posts postsId);
     int countByPostId(Posts postId);
     void deleteAllByPostId(Posts postsId);
+    void deleteAllByUserId(User userId);
 
 
 }

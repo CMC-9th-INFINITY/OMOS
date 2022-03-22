@@ -21,6 +21,9 @@ public class AuthService {
     private final QueryRepository queryRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final FollowRepository followRepository;
+    private final ScrapRepository scrapRepository;
+    private final LikeRepository likeRepository;
 
     @Transactional(readOnly = true)
     public StateDto checkDuplicatedEmail(String email) {
@@ -138,8 +141,13 @@ public class AuthService {
     }
 
     @Transactional
-    public void signOut(Long userId){
-
+    public StateDto signOut(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        followRepository.deleteAllByFromUserId(user);
+        scrapRepository.deleteAllByUserId(user);
+        likeRepository.deleteAllByUserId(user);
+        userRepository.delete(user);
+        return StateDto.builder().state(true).build();
     }
 
 

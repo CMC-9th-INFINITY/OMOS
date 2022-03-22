@@ -1,7 +1,7 @@
 package com.infinity.omos.controller;
 
 import com.infinity.omos.dto.*;
-import com.infinity.omos.service.AuthService;
+import com.infinity.omos.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/auth")
@@ -17,6 +19,8 @@ import javax.validation.Valid;
 @Api(tags = {"계정API"})
 public class  AuthController {
     private final AuthService authService;
+    private final PostsService postsService;
+
 
     @ApiOperation(value = "로그인", notes = "이메일 로그인입니다")
     @PostMapping("/login")
@@ -59,6 +63,14 @@ public class  AuthController {
     @DeleteMapping("/logout/{userId}")
     public ResponseEntity<StateDto> logout(@PathVariable Long userId){
         return ResponseEntity.ok(authService.logout(userId));
+    }
+
+    @DeleteMapping("/signout/{userId}")
+    @ApiOperation(value = "계정탈퇴",notes = "현재는 계정삭제할 경우, 유저와 관련된 모든 것들이 사라지는 걸로 해두었습니다")
+    public ResponseEntity<StateDto> signOut(@PathVariable Long userId){
+        List<MyRecordDto> myRecordDtoList = postsService.selectMyPosts(userId);
+        myRecordDtoList.stream().map(MyRecordDto::getRecordId).collect(Collectors.toList()).forEach(postsService::delete);
+        return ResponseEntity.ok(authService.signOut(userId));
     }
 
 
