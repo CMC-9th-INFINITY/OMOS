@@ -40,6 +40,12 @@ public class UserController {
         return ResponseEntity.ok(userService.updatePassword(passwordDto));
     }
 
+    @ApiOperation(value = "유저 신고API",notes = "현재는 한번만 신고당해도 바아로 삭제")
+    @PutMapping("/{userId}/report")
+    public ResponseEntity<StateDto> reportUser(@PathVariable Long userId){
+        return ResponseEntity.ok(authService.signOut(userId));
+    }
+
 
 
 
