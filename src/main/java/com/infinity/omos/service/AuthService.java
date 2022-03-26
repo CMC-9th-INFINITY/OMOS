@@ -148,7 +148,6 @@ public class AuthService {
         scrapRepository.deleteAllByUserId(user);
         likeRepository.deleteAllByUserId(user);
         userRepository.delete(user);
-        refreshTokenRepository.deleteById(user.getEmail());
         return StateDto.builder().state(true).build();
     }
 
