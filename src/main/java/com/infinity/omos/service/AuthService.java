@@ -144,9 +144,11 @@ public class AuthService {
     public StateDto signOut(Long userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         followRepository.deleteAllByFromUserId(user);
+        followRepository.deleteAllByToUserId(user);
         scrapRepository.deleteAllByUserId(user);
         likeRepository.deleteAllByUserId(user);
         userRepository.delete(user);
+        refreshTokenRepository.deleteById(user.getEmail());
         return StateDto.builder().state(true).build();
     }
 
