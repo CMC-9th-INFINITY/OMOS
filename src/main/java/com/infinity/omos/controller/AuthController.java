@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class  AuthController {
     private final AuthService authService;
     private final PostsService postsService;
+    private final EmailService emailService;
 
 
     @ApiOperation(value = "로그인", notes = "이메일 로그인입니다")
@@ -71,6 +72,12 @@ public class  AuthController {
         List<MyRecordDto> myRecordDtoList = postsService.selectMyPosts(userId);
         myRecordDtoList.stream().map(MyRecordDto::getRecordId).collect(Collectors.toList()).forEach(postsService::delete);
         return ResponseEntity.ok(authService.signOut(userId));
+    }
+
+    @ApiOperation(value = "계정탈퇴",notes = "현재는 계정삭제할 경우, 유저와 관련된 모든 것들이 사라지는 걸로 해두었습니다")
+    @PostMapping("/email")
+    public ResponseEntity<String> sendEmail(@RequestBody MailDto mailDto) throws Exception {
+        return ResponseEntity.ok(emailService.sendSimpleMessage(mailDto));
     }
 
 
