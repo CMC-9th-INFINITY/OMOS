@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,9 +75,9 @@ public class  AuthController {
         return ResponseEntity.ok(authService.signOut(userId));
     }
 
-    @ApiOperation(value = "계정탈퇴",notes = "현재는 계정삭제할 경우, 유저와 관련된 모든 것들이 사라지는 걸로 해두었습니다")
+    @ApiOperation(value = "이메일",notes = "코드값이 리턴됩니다.")
     @PostMapping("/email")
-    public ResponseEntity<String> sendEmail(@RequestBody MailDto mailDto) throws Exception {
+    public ResponseEntity<HashMap<String,String>> sendEmail(@RequestBody MailDto mailDto) throws Exception {
         return ResponseEntity.ok(emailService.sendSimpleMessage(mailDto));
     }
 

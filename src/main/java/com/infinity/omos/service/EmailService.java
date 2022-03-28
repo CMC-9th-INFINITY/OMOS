@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.HashMap;
 import java.util.Random;
 
 @Service
@@ -47,13 +48,15 @@ public class EmailService {
         return key.toString();
     }
 
-    public String sendSimpleMessage(MailDto mailDto) throws Exception {
+    public HashMap<String, String> sendSimpleMessage(MailDto mailDto) throws Exception {
 
         String code = createKey();
+        HashMap<String,String> map = new HashMap<>();
+        map.put("code",code);
 
         try {//예외처리
             emailSender.send(createMessage(mailDto.getEmail(), code));
-            return code;
+            return map;
         } catch (MailException es) {
             es.printStackTrace();
             throw new IllegalArgumentException();
