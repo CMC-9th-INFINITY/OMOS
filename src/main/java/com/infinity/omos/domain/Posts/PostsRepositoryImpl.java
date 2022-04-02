@@ -14,8 +14,9 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
+import static com.infinity.omos.domain.Like.QLike.like;
 import static com.infinity.omos.domain.Posts.QPosts.posts;
-import static com.infinity.omos.domain.QLike.like;
+
 
 @RequiredArgsConstructor
 public class PostsRepositoryImpl implements PostsRepositoryCustom {

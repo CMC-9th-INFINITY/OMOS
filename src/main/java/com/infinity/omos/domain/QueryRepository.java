@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import static com.infinity.omos.domain.Follow.QFollow.follow;
+import static com.infinity.omos.domain.Like.QLike.like;
 import static com.infinity.omos.domain.Posts.QPosts.posts;
-import static com.infinity.omos.domain.QFollow.follow;
-import static com.infinity.omos.domain.QLike.like;
-import static com.infinity.omos.domain.QScrap.scrap;
-import static com.infinity.omos.domain.QUser.user;
+import static com.infinity.omos.domain.User.QUser.user;
+import static com.infinity.omos.domain.Scrap.QScrap.scrap;
 
 @RequiredArgsConstructor
 @Repository

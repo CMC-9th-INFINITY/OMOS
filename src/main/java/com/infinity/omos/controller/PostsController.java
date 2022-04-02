@@ -39,11 +39,11 @@ public class PostsController {
         return ResponseEntity.ok(postsService.save(postsRequestDto));
     }
 
-    @ApiOperation(value = "레코드 신고수 상승", notes = "역시 다 놔두면 어디에 쓰이나봐요 호호 조회가 신고로 바뀌었습니다~ 신고수가 1가 되면 post삭제됩니다~")
-    @PutMapping("/{postId}/report")
-    public ResponseEntity<StateDto> plusViews(@PathVariable("postId") Long postId) {
-        return ResponseEntity.ok(postsService.plusViewsCnt(postId));
-    }
+//    @ApiOperation(value = "레코드 신고수 상승", notes = "역시 다 놔두면 어디에 쓰이나봐요 호호 조회가 신고로 바뀌었습니다~ 신고수가 1가 되면 post삭제됩니다~")
+//    @PutMapping("/{postId}/report")
+//    public ResponseEntity<StateDto> plusViews(@PathVariable("postId") Long postId) {
+//        return ResponseEntity.ok(postsService.plusViewsCnt(postId));
+//    }
 
     @ApiOperation(value = "MY레코드 전체 불러오기", notes = "페이징 처리 안하고 다 불러오는 걸로 했습니다!")
     @GetMapping("/{userId}")

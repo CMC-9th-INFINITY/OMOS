@@ -1,5 +1,6 @@
 package com.infinity.omos.service;
 
+import com.infinity.omos.domain.Report.Report;
 import com.infinity.omos.dto.MailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
@@ -21,7 +22,7 @@ public class EmailService {
         MimeMessage message = emailSender.createMimeMessage();
 
         message.addRecipients(MimeMessage.RecipientType.TO, to); //보내는 대상
-        message.setSubject("MoveOn 이메일 주소 확인"); //제목
+        message.setSubject("OMOS 이메일 주소 확인"); //제목
 
         String msg = "";
         msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">이메일 주소 확인</h1>";
@@ -32,7 +33,7 @@ public class EmailService {
         msg += "<style=\"text-decoration: none; color: #434245;\" rel=\"noreferrer noopener\" target=\"_blank\">OMOS</a>";
 
         message.setText(msg, "utf-8", "html"); //내용
-        message.setFrom(new InternetAddress("sumeen99@naver.com", "OMOS")); //보내는 사람
+        message.setFrom(new InternetAddress("noreply@omos.com", "OMOS")); //보내는 사람
 
         return message;
     }
@@ -57,6 +58,37 @@ public class EmailService {
         try {//예외처리
             emailSender.send(createMessage(mailDto.getEmail(), code));
             return map;
+        } catch (MailException es) {
+            es.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private MimeMessage createReportMessage(Report report) throws Exception {
+
+        MimeMessage message = emailSender.createMimeMessage();
+
+        message.addRecipients(MimeMessage.RecipientType.TO, "officialproject111@gmail.com"); //보내는 대상
+        message.setSubject("OMOS 신고문의"); //제목
+
+        String msg = "";
+        msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">OMOS 신고문의</h1>";
+        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"유형:"+report.getReportType().toString()+"</p>";
+        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"신고자ID:"+report.getFromUserId()+"</p>";
+        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"레코드ID:"+report.getPostId()+"</p>";
+        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"신고당한ID:"+report.getToUserId()+"</p>";
+        msg += "<style=\"text-decoration: none; color: #434245;\" rel=\"noreferrer noopener\" target=\"_blank\">OMOS</a>";
+
+        message.setText(msg, "utf-8", "html"); //내용
+        message.setFrom(new InternetAddress("noreply@omos.com", "OMOS")); //보내는 사람
+
+        return message;
+    }
+
+    public void sendSimpleReportMessage(Report report) throws Exception {
+
+        try {//예외처리
+            emailSender.send(createReportMessage(report));
         } catch (MailException es) {
             es.printStackTrace();
             throw new IllegalArgumentException();
