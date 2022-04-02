@@ -1,5 +1,6 @@
-package com.infinity.omos.domain;
+package com.infinity.omos.domain.RefreshToken;
 
+import com.infinity.omos.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,5 @@
 package com.infinity.omos.controller;
 
-import com.infinity.omos.domain.UserRepository;
 import com.infinity.omos.dto.*;
 import com.infinity.omos.service.AuthService;
 import com.infinity.omos.service.PostsService;

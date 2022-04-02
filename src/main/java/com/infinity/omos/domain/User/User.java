@@ -1,5 +1,7 @@
-package com.infinity.omos.domain;
+package com.infinity.omos.domain.User;
 
+import com.infinity.omos.domain.Authority;
+import com.infinity.omos.domain.BaseTimeEntity;
 import com.infinity.omos.dto.DjDto;
 import com.infinity.omos.dto.SignUpDto;
 import com.infinity.omos.dto.SnsSignUpDto;
@@ -18,7 +20,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Builder
 @NoArgsConstructor
-public class User extends BaseTimeEntity{
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

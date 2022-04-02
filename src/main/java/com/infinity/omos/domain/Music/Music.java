@@ -1,5 +1,6 @@
-package com.infinity.omos.domain;
+package com.infinity.omos.domain.Music;
 
+import com.infinity.omos.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Builder
 @NoArgsConstructor
-public class Music extends BaseTimeEntity{
+public class Music extends BaseTimeEntity {
 
     @Id
     @Column(nullable = false)

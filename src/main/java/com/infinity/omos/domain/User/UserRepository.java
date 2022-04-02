@@ -1,5 +1,6 @@
-package com.infinity.omos.domain;
+package com.infinity.omos.domain.User;
 
+import com.infinity.omos.domain.User.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -67,7 +67,7 @@ public class SpotifyAllSearchApi {
 
     }
 
-    public static List<TrackDto> spotifyTrackSearchApi(String accessToken, String keyword, int offset, int limit) {
+    public static List<TrackDto> spotifyTrackSearchApi(String accessToken, String keyword, int offset, int limit, int type) {
 
         List<TrackDto> trackDtos = new ArrayList<>();
 
@@ -105,7 +105,14 @@ public class SpotifyAllSearchApi {
             JsonElement element = JsonParser.parseString(result.toString());
             JsonObject object = element.getAsJsonObject();
 
-            trackFrame(object, trackDtos);
+            if(type==1){
+                trackFrameOnTrackName(object,trackDtos);
+            }
+            else {
+                trackFrame(object, trackDtos);
+            }
+
+
             br.close();
 
         } catch (IOException e) {
@@ -478,6 +485,23 @@ public class SpotifyAllSearchApi {
 
 
             trackDto.setMusicId(items.get(i).getAsJsonObject().get("id").getAsString());
+            trackDto.setMusicTitle(items.get(i).getAsJsonObject().get("name").getAsString());
+            trackDtos.add(trackDto);
+
+
+        }
+
+        return trackDtos;
+    }
+
+    public static List<TrackDto> trackFrameOnTrackName(JsonObject object, List<TrackDto> trackDtos) {
+
+        JsonObject tracks = object.get("tracks").getAsJsonObject();
+        JsonArray items = tracks.get("items").getAsJsonArray();
+
+
+        for (int i = 0; i < items.size(); i++) {
+            TrackDto trackDto = new TrackDto();
             trackDto.setMusicTitle(items.get(i).getAsJsonObject().get("name").getAsString());
             trackDtos.add(trackDto);
 

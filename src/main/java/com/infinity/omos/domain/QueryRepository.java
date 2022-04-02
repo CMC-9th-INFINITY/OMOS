@@ -1,10 +1,13 @@
 package com.infinity.omos.domain;
 
 
+import com.infinity.omos.domain.Follow.Follow;
+import com.infinity.omos.domain.Like.Like;
 import com.infinity.omos.domain.Posts.Posts;
+import com.infinity.omos.domain.Scrap.Scrap;
+import com.infinity.omos.domain.User.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

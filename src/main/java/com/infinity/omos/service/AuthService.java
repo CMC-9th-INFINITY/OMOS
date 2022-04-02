@@ -2,6 +2,13 @@ package com.infinity.omos.service;
 
 import com.infinity.omos.config.jwt.JwtTokenProvider;
 import com.infinity.omos.domain.*;
+import com.infinity.omos.domain.Follow.FollowRepository;
+import com.infinity.omos.domain.Like.LikeRepository;
+import com.infinity.omos.domain.RefreshToken.RefreshToken;
+import com.infinity.omos.domain.RefreshToken.RefreshTokenRepository;
+import com.infinity.omos.domain.Scrap.ScrapRepository;
+import com.infinity.omos.domain.User.User;
+import com.infinity.omos.domain.User.UserRepository;
 import com.infinity.omos.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

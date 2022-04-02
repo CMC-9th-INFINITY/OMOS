@@ -1,7 +1,11 @@
 package com.infinity.omos.service;
 
 import com.infinity.omos.domain.*;
+import com.infinity.omos.domain.Follow.Follow;
+import com.infinity.omos.domain.Follow.FollowRepository;
 import com.infinity.omos.domain.Posts.PostsRepository;
+import com.infinity.omos.domain.User.User;
+import com.infinity.omos.domain.User.UserRepository;
 import com.infinity.omos.dto.CountDto;
 import com.infinity.omos.dto.DjDto;
 import com.infinity.omos.dto.DjprofileDto;

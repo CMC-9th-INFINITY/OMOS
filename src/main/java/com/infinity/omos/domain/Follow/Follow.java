@@ -1,19 +1,20 @@
-package com.infinity.omos.domain;
+package com.infinity.omos.domain.Follow;
 
+import com.infinity.omos.domain.BaseTimeEntity;
+import com.infinity.omos.domain.User.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Getter
 @AllArgsConstructor
 @Entity
 @Builder
 @NoArgsConstructor
-public class Follow extends BaseTimeEntity{
+public class Follow extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

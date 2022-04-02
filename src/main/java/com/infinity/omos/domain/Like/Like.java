@@ -1,7 +1,9 @@
-package com.infinity.omos.domain;
+package com.infinity.omos.domain.Like;
 
 
+import com.infinity.omos.domain.BaseTimeEntity;
 import com.infinity.omos.domain.Posts.Posts;
+import com.infinity.omos.domain.User.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.infinity.omos.service;
 
-import com.infinity.omos.domain.User;
-import com.infinity.omos.domain.UserRepository;
+import com.infinity.omos.domain.User.User;
+import com.infinity.omos.domain.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

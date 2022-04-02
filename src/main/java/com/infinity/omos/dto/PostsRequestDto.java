@@ -1,9 +1,9 @@
 package com.infinity.omos.dto;
 
 import com.infinity.omos.domain.Category;
-import com.infinity.omos.domain.Music;
+import com.infinity.omos.domain.Music.Music;
 import com.infinity.omos.domain.Posts.Posts;
-import com.infinity.omos.domain.User;
+import com.infinity.omos.domain.User.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

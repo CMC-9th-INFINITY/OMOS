@@ -1,6 +1,8 @@
-package com.infinity.omos.domain;
+package com.infinity.omos.domain.Scrap;
 
+import com.infinity.omos.domain.BaseTimeEntity;
 import com.infinity.omos.domain.Posts.Posts;
+import com.infinity.omos.domain.User.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Builder
 @NoArgsConstructor
-public class Scrap extends BaseTimeEntity{
+public class Scrap extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

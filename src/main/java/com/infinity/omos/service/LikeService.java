@@ -1,8 +1,12 @@
 package com.infinity.omos.service;
 
 import com.infinity.omos.domain.*;
+import com.infinity.omos.domain.Like.Like;
+import com.infinity.omos.domain.Like.LikeRepository;
 import com.infinity.omos.domain.Posts.Posts;
 import com.infinity.omos.domain.Posts.PostsRepository;
+import com.infinity.omos.domain.User.User;
+import com.infinity.omos.domain.User.UserRepository;
 import com.infinity.omos.dto.StateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

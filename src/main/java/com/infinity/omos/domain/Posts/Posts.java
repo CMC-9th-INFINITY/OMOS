@@ -2,8 +2,8 @@ package com.infinity.omos.domain.Posts;
 
 import com.infinity.omos.domain.BaseTimeEntity;
 import com.infinity.omos.domain.Category;
-import com.infinity.omos.domain.Music;
-import com.infinity.omos.domain.User;
+import com.infinity.omos.domain.Music.Music;
+import com.infinity.omos.domain.User.User;
 import com.infinity.omos.dto.PostsUpdateDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
