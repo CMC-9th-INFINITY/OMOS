@@ -23,6 +23,7 @@ import static com.infinity.omos.domain.Like.QLike.like;
 import static com.infinity.omos.domain.Posts.QPosts.posts;
 import static com.infinity.omos.domain.User.QUser.user;
 import static com.infinity.omos.domain.Scrap.QScrap.scrap;
+import static com.infinity.omos.domain.Block.QBlock.block;
 
 @RequiredArgsConstructor
 @Repository
@@ -230,13 +231,15 @@ public class QueryRepository {
 
     }
 
-    public List<Posts> findAllByCategoryOrderByCreatedDate(Category category, Long postId, int pageSize) {
+    public List<Posts> findAllByCategoryOrderByCreatedDate(Category category, Long postId, int pageSize, User user) {
 
         return queryFactory.selectFrom(posts)
+                .innerJoin(block).on(block.fromUserId.eq(user))
                 .where(
                         ltPostId(postId),
                         posts.category.eq(category),
-                        posts.isPublic.eq(true))
+                        posts.isPublic.eq(true),
+                        )
                 .orderBy(posts.id.desc())
                 .limit(pageSize)
                 .fetch();

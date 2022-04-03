@@ -80,12 +80,12 @@ public class PostsService {
     @Transactional(readOnly = true)
     public List<PostsDetailResponseDto> selectRecordsByCategory(Category category, SortType sortType, Long postId, int pageSize, Long userId) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-
+        User user = userRepository.getById(userId);
         List<PostsDetailResponseDto> postsDetailResponseDtos = new ArrayList<>();
         List<Posts> posts;
         switch (sortType) {
             case date:
-                posts = queryRepository.findAllByCategoryOrderByCreatedDate(category, postId, pageSize);
+                posts = queryRepository.findAllByCategoryOrderByCreatedDate(category, postId, pageSize,user);
                 break;
             case like:
                 //Pageable pageable = PageRequest.of(page,pageSize);
@@ -98,9 +98,10 @@ public class PostsService {
                 return postsDetailResponseDtos;
 
         }
+
         for (Posts post : posts) {
             TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
-            User user = userRepository.getById(userId);
+
             postsDetailResponseDtos.add(
                     getPostsDetailResponseDto(post, user, trackDto)
             );
