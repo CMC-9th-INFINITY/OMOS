@@ -25,14 +25,12 @@ public class Like extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    @Column(nullable = false)
+    @JoinColumn(name = "user_id",nullable = false)
     @NotNull
     private User userId;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
-    @Column(nullable = false)
+    @JoinColumn(name = "post_id",nullable = false)
     @NotNull
     private Posts postId;
 

@@ -27,8 +27,7 @@ public class Report {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="from_user_id")
-    @Column(nullable = false)
+    @JoinColumn(name="from_user_id",nullable = false)
     private User fromUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)

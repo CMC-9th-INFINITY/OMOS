@@ -116,10 +116,9 @@ public class QueryRepository {
         return queryFactory
                 .selectFrom(posts)
                 .innerJoin(follow).on(posts.userId.eq(follow.toUserId))
-                .innerJoin(user).on(follow.fromUserId.eq(user))
                 .where(
                         ltPostId(postId),
-                        user.eq(userId),
+                        follow.fromUserId.eq(userId),
                         posts.id.notIn(block(userId)))
                 .groupBy(posts.id)
                 .orderBy(posts.id.desc())
@@ -324,7 +323,8 @@ public class QueryRepository {
                 .innerJoin(scrap).on(posts.id.eq(scrap.postId.id))
                 .where(
                         posts.isPublic.eq(true),
-                        scrap.userId.eq(userId)
+                        scrap.userId.eq(userId),
+                        posts.id.notIn(block(userId))
                 )
                 .orderBy(scrap.createdDate.desc());
 
@@ -341,7 +341,8 @@ public class QueryRepository {
                 .innerJoin(like).on(posts.id.eq(like.postId.id))
                 .where(
                         posts.isPublic.eq(true),
-                        like.userId.eq(userId)
+                        like.userId.eq(userId),
+                        posts.id.notIn(block(userId))
                 )
                 .orderBy(like.createdDate.desc());
 
