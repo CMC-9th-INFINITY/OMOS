@@ -89,10 +89,10 @@ public class PostsService {
                 break;
             case like:
                 //Pageable pageable = PageRequest.of(page,pageSize);
-                posts = queryRepository.findAllByCategoryOrderByLike(category, postId, pageSize);
+                posts = queryRepository.findAllByCategoryOrderByLike(category, postId, pageSize,user);
                 break;
             case random:
-                posts = queryRepository.findAllByCategoryOrderByRandom(category, postId, pageSize);
+                posts = queryRepository.findAllByCategoryOrderByRandom(category, postId, pageSize,user);
                 break;
             default:
                 return postsDetailResponseDtos;
@@ -270,13 +270,13 @@ public class PostsService {
         List<Posts> posts; //이게 지금은 list를 다 받아와서 하는데 나중엔 하나씩받아와서 받아올때마다 dto만들고 의 반복으로 할 수 있을지 알아보자
         switch (sortType) {
             case date:
-                posts = queryRepository.findAllByMusicIdByCreatedDate(postId, musicId, pageSize);
+                posts = queryRepository.findAllByMusicIdByCreatedDate(postId, musicId, pageSize,user);
                 break;
             case like:
-                posts = queryRepository.findAllByMusicIdByLike(postId, musicId, pageSize);
+                posts = queryRepository.findAllByMusicIdByLike(postId, musicId, pageSize,user);
                 break;
             case random:
-                posts = queryRepository.findAllByMusicIdByRandom(postId, musicId, pageSize);
+                posts = queryRepository.findAllByMusicIdByRandom(postId, musicId, pageSize,user);
                 break;
             default:
                 return postsDetailResponseDtoList;
@@ -305,7 +305,7 @@ public class PostsService {
 
         List<PostsDetailResponseDto> postsDetailResponseDtoList = new ArrayList<>();
 
-        List<Posts> postsList = queryRepository.findPublicPostsByUserId(toUser);
+        List<Posts> postsList = queryRepository.findPublicPostsByUserId(fromUser,toUser);
         for (Posts post : postsList) {
             TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
 

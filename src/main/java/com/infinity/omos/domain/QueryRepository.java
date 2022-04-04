@@ -8,6 +8,8 @@ import com.infinity.omos.domain.Scrap.Scrap;
 import com.infinity.omos.domain.User.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +20,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import static com.infinity.omos.domain.Block.QBlock.block;
 import static com.infinity.omos.domain.Follow.QFollow.follow;
 import static com.infinity.omos.domain.Like.QLike.like;
 import static com.infinity.omos.domain.Posts.QPosts.posts;
-import static com.infinity.omos.domain.User.QUser.user;
 import static com.infinity.omos.domain.Scrap.QScrap.scrap;
-import static com.infinity.omos.domain.Block.QBlock.block;
+import static com.infinity.omos.domain.User.QUser.user;
 
 @RequiredArgsConstructor
 @Repository
@@ -48,8 +50,8 @@ public class QueryRepository {
         return queryFactory.selectFrom(posts).where(posts.userId.eq(userId)).orderBy(posts.id.desc()).fetch();
     }
 
-    public List<Posts> findPublicPostsByUserId(User userId) {
-        return queryFactory.selectFrom(posts).where(posts.userId.eq(userId), posts.isPublic.eq(true)).orderBy(posts.id.desc()).fetch();
+    public List<Posts> findPublicPostsByUserId(User toUser,User fromUser) {
+        return queryFactory.selectFrom(posts).where(posts.userId.eq(toUser), posts.isPublic.eq(true), posts.id.notIn(block(fromUser))).orderBy(posts.id.desc()).fetch();
     }
 
     public List<Long> findPostsIdByUserId(User userId) {
@@ -117,52 +119,56 @@ public class QueryRepository {
                 .innerJoin(user).on(follow.fromUserId.eq(user))
                 .where(
                         ltPostId(postId),
-                        user.eq(userId))
+                        user.eq(userId),
+                        posts.id.notIn(block(userId)))
                 .groupBy(posts.id)
                 .orderBy(posts.id.desc())
                 .limit(pageSize)
                 .fetch();
     }
 
-    public List<Posts> findAllByMusicIdByRandom(Long postId, String musicId, int pageSize) {
+    public List<Posts> findAllByMusicIdByRandom(Long postId, String musicId, int pageSize, User user) {
         return queryFactory
                 .selectFrom(posts)
                 .where(
                         ltPostId(postId),
                         posts.musicId.id.eq(musicId),
-                        posts.isPublic.eq(true))
+                        posts.isPublic.eq(true),
+                        posts.id.notIn(block(user)))
                 .groupBy(posts.id)
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .limit(pageSize)
                 .fetch();
     }
 
-    public List<Posts> findAllByMusicIdByCreatedDate(Long postId, String musicId, int pageSize) {
+    public List<Posts> findAllByMusicIdByCreatedDate(Long postId, String musicId, int pageSize, User user) {
         return queryFactory
                 .selectFrom(posts)
                 .where(
                         ltPostId(postId),
                         posts.musicId.id.eq(musicId),
-                        posts.isPublic.eq(true))
+                        posts.isPublic.eq(true),
+                        posts.id.notIn(block(user)))
                 .groupBy(posts.id)
                 .orderBy(posts.id.desc())
                 .limit(pageSize)
                 .fetch();
     }
 
-    public List<Posts> findAllByMusicIdByLike(Long postId, String musicId, int pageSize) {
+    public List<Posts> findAllByMusicIdByLike(Long postId, String musicId, int pageSize, User user) {
         Long cnt = findLikeCount(postId);
 
         return queryFactory.selectFrom(posts)
                 .leftJoin(like).on(like.postId.eq(posts))
                 .where(
                         posts.musicId.id.eq(musicId)
-                        , posts.isPublic.eq(true))
+                        , posts.isPublic.eq(true),
+                        posts.id.notIn(block(user)))
                 .groupBy(posts.id)
                 .having(
-                        ltPostIdByLike(postId,cnt)
+                        ltPostIdByLike(postId, cnt)
                 )
-                .orderBy(like.id.count().desc(),posts.id.desc())
+                .orderBy(like.id.count().desc(), posts.id.desc())
                 .limit(pageSize)
                 .fetch();
     }
@@ -174,33 +180,34 @@ public class QueryRepository {
         return posts.id.lt(postId);
     }
 
-    private BooleanExpression ltPostIdByLike(Long postId , Long cnt) {
+    private BooleanExpression ltPostIdByLike(Long postId, Long cnt) {
         if (postId == null) {
             return null;
         }
-        return  (like.id.count().eq(cnt).and(posts.id.lt(postId)))
+        return (like.id.count().eq(cnt).and(posts.id.lt(postId)))
                 .or(like.id.count().lt(cnt));
     }
 
-    public List<Posts> findAllByCategoryOrderByLike(Category category, Long postId, int pageSize) {
+    public List<Posts> findAllByCategoryOrderByLike(Category category, Long postId, int pageSize, User user) {
         Long cnt = findLikeCount(postId);
 
         return queryFactory.selectFrom(posts)
                 .leftJoin(like).on(like.postId.eq(posts))
                 .where(
                         posts.category.eq(category)
-                        , posts.isPublic.eq(true))
+                        , posts.isPublic.eq(true),
+                        posts.id.notIn(block(user)))
                 .groupBy(posts.id)
                 .having(
-                        ltPostIdByLike(postId,cnt)
+                        ltPostIdByLike(postId, cnt)
                 )
-                .orderBy(like.id.count().desc(),posts.id.desc())
+                .orderBy(like.id.count().desc(), posts.id.desc())
                 .limit(pageSize)
                 .fetch();
 
     }
 
-    private Long findLikeCount(Long postId){
+    private Long findLikeCount(Long postId) {
         return queryFactory
                 .select(like.id.count())
                 .from(posts)
@@ -218,13 +225,14 @@ public class QueryRepository {
     }
 
 
-    public List<Posts> findAllByCategoryOrderByRandom(Category category, Long postId, int pageSize) {
+    public List<Posts> findAllByCategoryOrderByRandom(Category category, Long postId, int pageSize, User user) {
 
         return queryFactory.selectFrom(posts)
                 .where(
                         ltPostId(postId),
                         posts.category.eq(category),
-                        posts.isPublic.eq(true))
+                        posts.isPublic.eq(true),
+                        posts.id.notIn(block(user)))
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .limit(pageSize)
                 .fetch();
@@ -234,12 +242,11 @@ public class QueryRepository {
     public List<Posts> findAllByCategoryOrderByCreatedDate(Category category, Long postId, int pageSize, User user) {
 
         return queryFactory.selectFrom(posts)
-                .innerJoin(block).on(block.fromUserId.eq(user))
                 .where(
                         ltPostId(postId),
                         posts.category.eq(category),
                         posts.isPublic.eq(true),
-                        )
+                        posts.id.notIn(block(user)))
                 .orderBy(posts.id.desc())
                 .limit(pageSize)
                 .fetch();
@@ -247,6 +254,15 @@ public class QueryRepository {
     }
 
     ///여기까지 페이징처리부분
+
+    private JPQLQuery<Long> block(User user) {
+        return JPAExpressions.select(posts.id)
+                .from(posts)
+                .innerJoin(block).on(
+                        posts.id.eq(block.postId.id).or(posts.userId.eq(block.toUserId)),
+                        block.fromUserId.eq(user)
+                );
+    }
 
 
     public String findMusicIdOnToday() {
@@ -291,7 +307,7 @@ public class QueryRepository {
     }
 
     public Posts findPostByRandom(Long userId) {
-        if(userId == null){
+        if (userId == null) {
             return null;
         }
         return queryFactory.selectFrom(posts)
@@ -303,26 +319,24 @@ public class QueryRepository {
                 .fetchFirst();
     }
 
-    public List<Posts> findScrapedPostsByUserId(User userId, Integer size){
+    public List<Posts> findScrapedPostsByUserId(User userId, Integer size) {
         JPAQuery<Posts> jpaQuery = queryFactory.selectFrom(posts)
                 .innerJoin(scrap).on(posts.id.eq(scrap.postId.id))
                 .where(
                         posts.isPublic.eq(true),
                         scrap.userId.eq(userId)
                 )
-                .orderBy(scrap.createdDate.desc())
-                ;
+                .orderBy(scrap.createdDate.desc());
 
-        if(size == null){
+        if (size == null) {
             return jpaQuery.fetch();
-        }
-        else{
+        } else {
             return jpaQuery.limit(size).fetch();
         }
 
     }
 
-    public List<Posts> findLikedPostsByUserId(User userId, Integer size){
+    public List<Posts> findLikedPostsByUserId(User userId, Integer size) {
         JPAQuery<Posts> jpaQuery = queryFactory.selectFrom(posts)
                 .innerJoin(like).on(posts.id.eq(like.postId.id))
                 .where(
@@ -331,10 +345,9 @@ public class QueryRepository {
                 )
                 .orderBy(like.createdDate.desc());
 
-        if(size == null){
+        if (size == null) {
             return jpaQuery.fetch();
-        }
-        else{
+        } else {
             return jpaQuery.limit(size).fetch();
         }
 
