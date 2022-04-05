@@ -39,12 +39,7 @@ public class UserService {
         return StateDto.builder().state(true).build();
     }
 
-    @Transactional
-    public StateDto updatePassword(PasswordDto passwordDto){
-        User user = userRepository.findById(passwordDto.getUserId()).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
-        user.updatePassword(passwordDto.getPassword(),passwordEncoder);
-        return StateDto.builder().state(true).build();
-    }
+
 
 
 

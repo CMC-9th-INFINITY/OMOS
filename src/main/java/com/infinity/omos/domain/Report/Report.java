@@ -1,5 +1,6 @@
 package com.infinity.omos.domain.Report;
 
+import com.infinity.omos.domain.BaseTimeEntity;
 import com.infinity.omos.domain.Posts.Posts;
 import com.infinity.omos.domain.ReportType;
 import com.infinity.omos.domain.User.User;
@@ -15,7 +16,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @NoArgsConstructor
-public class Report {
+public class Report extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

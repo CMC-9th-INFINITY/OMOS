@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.infinity.omos.config.S3Configuration;
+import com.infinity.omos.dto.StateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -56,8 +57,9 @@ public class S3Service {
         return amazonS3.getUrl(bucket+"/image", fileName).toString();
     }
 
-    public void deleteFile(String fileName) {
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket+"/image", fileName));
+    public StateDto deleteFile(String directory, String fileName) {
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket+"/"+directory, fileName));
+        return StateDto.builder().state(true).build();
     }
 
     private String createFileName(String fileName) { // 먼저 파일 업로드 시, 파일명을 난수화하기 위해 random으로 돌립니다.

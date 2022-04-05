@@ -71,12 +71,24 @@ public class EmailService {
         message.addRecipients(MimeMessage.RecipientType.TO, "officialproject111@gmail.com"); //보내는 대상
         message.setSubject("OMOS 신고문의"); //제목
 
+        String toUserId = null;
+        if(report.getToUserId()!=null){
+            toUserId = report.getToUserId().getId().toString();
+        }
+
+        String postId = null;
+        if(report.getPostId()!=null){
+            postId = report.getPostId().getId().toString();
+        }
+
+
         String msg = "";
         msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">OMOS 신고문의</h1>";
         msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"유형:"+report.getReportType().toString()+"</p>";
-        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"신고자ID:"+report.getFromUserId()+"</p>";
-        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"레코드ID:"+report.getPostId()+"</p>";
-        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"신고당한ID:"+report.getToUserId()+"</p>";
+        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"신고자ID:"+report.getFromUserId().getId().toString()+"</p>";
+        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"레코드ID:"+postId+"</p>";
+        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"신고당한ID:"+toUserId+"</p>";
+        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">"+"신고사유:"+report.getReportReason()+"</p>";
         msg += "<style=\"text-decoration: none; color: #434245;\" rel=\"noreferrer noopener\" target=\"_blank\">OMOS</a>";
 
         message.setText(msg, "utf-8", "html"); //내용

@@ -81,5 +81,11 @@ public class  AuthController {
         return ResponseEntity.ok(emailService.sendSimpleMessage(mailDto));
     }
 
+    @ApiOperation(value = "비밀번호 변경 API")
+    @PutMapping("/update/password")
+    public ResponseEntity<StateDto> updatePassword(@RequestBody PasswordDto passwordDto){
+        return ResponseEntity.ok(authService.updatePassword(passwordDto));
+    }
+
 
 }

@@ -7,7 +7,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +21,9 @@ public class PostsController {
     private final PostsService postsService;
 
     @ApiOperation(value = "전체레코드 처음페이지", notes = "전체레코드에서 각 카테고리별로 가져가시면 될것같아요\n artist가 list인 이유는 가수가 여러명일 때도 있어서 spotify에서 그렇게 해놓은 것 같아서 저도 그대로 했습니다!")
-    @GetMapping("/select")
-    public ResponseEntity<HashMap<Category, List<PostsResponseDto>>> selectAllPosts() {
-        return ResponseEntity.ok(postsService.selectRecordsMatchingAllCategory());
+    @GetMapping("/select/{userId}")
+    public ResponseEntity<HashMap<Category, List<PostsResponseDto>>> selectAllPosts(@PathVariable Long userId) {
+        return ResponseEntity.ok(postsService.selectRecordsMatchingAllCategory(userId));
     }
 
     @ApiOperation(value = "전체레코드에서 상세보기", notes = "postId는 처음엔 아무것도 안주시면 됩니다. 그리고 두번째부터는 첫번째에 받았던 마지막 postId를 넣어주시면 그 이후 post부터 나오게 됩니다.")
@@ -99,21 +98,21 @@ public class PostsController {
         return ResponseEntity.ok(postsService.selectPostById(postId, userId));
     }
 
-    @ApiOperation(value = "My페이지 레코드들",notes = "스크랩한 레코드 2개, 좋아요한 레코드 2개나오는 부분입니다~")
+    @ApiOperation(value = "My페이지 레코드들", notes = "스크랩한 레코드 2개, 좋아요한 레코드 2개나오는 부분입니다~")
     @GetMapping("/select/{userId}/my-records")
-    public ResponseEntity<Object> selectPostsByUserIdOnMyPage(@PathVariable Long userId){
+    public ResponseEntity<Object> selectPostsByUserIdOnMyPage(@PathVariable Long userId) {
         return ResponseEntity.ok(postsService.selectPostsByUserIdOnMyPage(userId));
     }
 
     @ApiOperation(value = "좋아요레코드들 목록")
     @GetMapping("/select/{userId}/liked-records")
-    public ResponseEntity<List<MyRecordDto>> selectLikedPosts(@PathVariable Long userId){
+    public ResponseEntity<List<MyRecordDto>> selectLikedPosts(@PathVariable Long userId) {
         return ResponseEntity.ok(postsService.selectLikedPosts(userId));
     }
 
     @ApiOperation(value = "스크랩레코드들 목록")
     @GetMapping("/select/{userId}/scrapped-records")
-    public ResponseEntity<List<MyRecordDto>> selectScrappedPosts(@PathVariable Long userId){
+    public ResponseEntity<List<MyRecordDto>> selectScrappedPosts(@PathVariable Long userId) {
         return ResponseEntity.ok(postsService.selectScrappedPosts(userId));
     }
 }

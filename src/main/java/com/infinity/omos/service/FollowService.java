@@ -49,8 +49,11 @@ public class FollowService {
     public StateDto delete(Long fromUserId, Long toUserId) {
         User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
-
-        followRepository.delete(queryRepository.findFollowByUserId(toUser, fromUser));
+        Follow follow = queryRepository.findFollowByUserId(toUser, fromUser);
+        if(follow == null){
+            return StateDto.builder().state(false).build();
+        }
+        followRepository.delete(follow);
         return StateDto.builder().state(true).build();
     }
 

@@ -36,13 +36,9 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUserProfile(userRequestDto));
     }
 
-    @ApiOperation(value = "비밀번호 변경 API")
-    @PutMapping("/update/password")
-    public ResponseEntity<StateDto> updatePassword(@RequestBody PasswordDto passwordDto){
-        return ResponseEntity.ok(userService.updatePassword(passwordDto));
-    }
 
-    @ApiOperation(value = "유저 신고API",notes = "현재는 한번만 신고당해도 바아로 삭제")
+
+    @ApiOperation(value = "유저 신고API",notes = "현재는 한번만 신고당해도 바아로 삭제: 이거 나중에 삭제 하겠습니다~ 신고쪽에 있는 API사용해주세요~")
     @PutMapping("/{userId}/report")
     public ResponseEntity<StateDto> reportUser(@PathVariable Long userId){
         List<MyRecordDto> myRecordDtoList = postsService.selectMyPosts(userId);

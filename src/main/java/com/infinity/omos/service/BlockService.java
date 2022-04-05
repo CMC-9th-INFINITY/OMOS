@@ -26,11 +26,11 @@ public class BlockService {
     public StateDto save(ReportType type, ReportDto reportDto, Report report) {
         Block block;
 
-        User fromUser = userRepository.findById(reportDto.getFromUserId()).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        User fromUser = userRepository.getById(reportDto.getFromUserId());
 
 
         if (type == ReportType.Record) {
-            Posts posts = postsRepository.findById(reportDto.getRecordId()).orElseThrow(() -> new RuntimeException("해당 레코드는 존재하지 않는 레코드입니다"));
+            Posts posts = postsRepository.getById(reportDto.getRecordId());
             block = savePostType(fromUser, posts);
         } else {
             User toUser = userRepository.findById(reportDto.getToUserId()).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
@@ -69,4 +69,5 @@ public class BlockService {
 
         return StateDto.builder().state(true).build();
     }
+
 }

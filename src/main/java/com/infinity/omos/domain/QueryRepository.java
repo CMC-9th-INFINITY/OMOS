@@ -42,8 +42,8 @@ public class QueryRepository {
         return queryFactory.select(user.id).from(user).where(user.email.eq(email)).fetchOne();
     }
 
-    public List<Posts> findPostsByCategory(Category category, int size) {
-        return queryFactory.selectFrom(posts).where(posts.category.eq(category), posts.isPublic.eq(true)).limit(size).orderBy(posts.createdDate.desc()).fetch();
+    public List<Posts> findPostsByCategory(Category category, int size, User user) {
+        return queryFactory.selectFrom(posts).where(posts.category.eq(category), posts.isPublic.eq(true),posts.id.notIn(block(user))).limit(size).orderBy(posts.createdDate.desc()).fetch();
     }
 
     public List<Posts> findPostsByUserId(User userId) {

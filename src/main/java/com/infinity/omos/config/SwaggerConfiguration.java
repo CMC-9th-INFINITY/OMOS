@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,9 @@ public class SwaggerConfiguration {
 
     private final TypeResolver typeResolver;
 
+    @Value("${swagger.title}")
+    private String swaggertitle;
+
     @Bean
     public Docket restAPI() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -51,7 +55,7 @@ public class SwaggerConfiguration {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("OMOS REST API")
+                .title(swaggertitle)
                 .version("1.0.0")
                 .description("OMOS REST API 저장소입니당")
                 .build();

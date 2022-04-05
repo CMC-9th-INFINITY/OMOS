@@ -1,5 +1,6 @@
 package com.infinity.omos.controller;
 
+import com.infinity.omos.dto.StateDto;
 import com.infinity.omos.service.S3Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,11 +45,10 @@ public class S3Controller {
      * Amazon S3에 업로드 된 파일을 삭제
      * @return 성공 시 200 Success
      */
-    @ApiOperation(value = "Amazon S3에 업로드 된 파일을 삭제", notes = "Amazon S3에 업로드된 파일 삭제")
+    @ApiOperation(value = "Amazon S3에 업로드 된 파일을 삭제", notes = "Amazon S3에 업로드된 파일 삭제 directory는 이미지가 image파일에 들어있으면 image라고 넣어주세요")
     @DeleteMapping("/file")
-    public ResponseEntity<Void> deleteFile(@ApiParam(value="파일 하나 삭제", required = true) @RequestParam String fileName) {
-        S3Service.deleteFile(fileName);
-        return ResponseEntity.ok(null);
+    public ResponseEntity<StateDto> deleteFile(@ApiParam(value="파일 하나 삭제", required = true)@RequestParam String directory, @RequestParam String fileName) {
+        return ResponseEntity.ok(S3Service.deleteFile(directory,fileName));
     }
 
 

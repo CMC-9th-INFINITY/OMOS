@@ -62,4 +62,10 @@ public class ReportService {
                 .reportReason(reportReason)
                 .build();
     }
+
+    @Transactional
+    public StateDto delete(Long reportId){
+        reportRepository.deleteById(reportId);
+        return StateDto.builder().state(true).build();
+    }
 }

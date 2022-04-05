@@ -36,20 +36,21 @@ public class PostsService {
 
 
     @Transactional(readOnly = true)
-    public HashMap<Category, List<PostsResponseDto>> selectRecordsMatchingAllCategory() {
+    public HashMap<Category, List<PostsResponseDto>> selectRecordsMatchingAllCategory(Long userId) {
         HashMap<Category, List<PostsResponseDto>> postsMatchingCategoryDtos = new HashMap<>();
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         for (Category category : Category.values()) {
-            postsMatchingCategoryDtos.put(category, selectRecordsMatchingCategory(category, 5));
+            postsMatchingCategoryDtos.put(category, selectRecordsMatchingCategory(category, 5,user));
         }
 
         return postsMatchingCategoryDtos;
     }
 
     @Transactional(readOnly = true)
-    public List<PostsResponseDto> selectRecordsMatchingCategory(Category category, int size) {
+    public List<PostsResponseDto> selectRecordsMatchingCategory(Category category, int size,User user) {
         SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
 
-        List<Posts> posts = queryRepository.findPostsByCategory(category, size);
+        List<Posts> posts = queryRepository.findPostsByCategory(category, size,user);
         List<PostsResponseDto> postsResponseDtos = new ArrayList<>();
         for (Posts post : posts) {
             TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
