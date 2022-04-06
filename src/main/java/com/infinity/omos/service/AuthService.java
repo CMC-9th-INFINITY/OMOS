@@ -19,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -163,6 +166,15 @@ public class AuthService {
         User user = userRepository.findById(passwordDto.getUserId()).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         user.updatePassword(passwordDto.getPassword(),passwordEncoder);
         return StateDto.builder().state(true).build();
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String,Long> getUserId(String email){
+
+        Map<String,Long> data = new HashMap<>();
+        data.put("userId",queryRepository.findUserIdByUserEmail(email));
+
+        return data;
     }
 
 

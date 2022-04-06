@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -85,6 +86,12 @@ public class  AuthController {
     @PutMapping("/update/password")
     public ResponseEntity<StateDto> updatePassword(@RequestBody PasswordDto passwordDto){
         return ResponseEntity.ok(authService.updatePassword(passwordDto));
+    }
+
+    @ApiOperation(value = "아이디로 userId가져오기")
+    @GetMapping("/{email}")
+    public ResponseEntity<Map<String,Long>> getUserId(@PathVariable String email){
+        return ResponseEntity.ok(authService.getUserId(email));
     }
 
 
