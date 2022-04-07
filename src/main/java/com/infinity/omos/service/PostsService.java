@@ -306,7 +306,7 @@ public class PostsService {
 
         List<PostsDetailResponseDto> postsDetailResponseDtoList = new ArrayList<>();
 
-        List<Posts> postsList = queryRepository.findPublicPostsByUserId(fromUser,toUser);
+        List<Posts> postsList = queryRepository.findPublicPostsByUserId(toUser,fromUser);
         for (Posts post : postsList) {
             TrackDto trackDto = SpotifyAllSearchApi.getTrackApi(spotifyApi.getAccessToken(), post.getMusicId().getId());
 
