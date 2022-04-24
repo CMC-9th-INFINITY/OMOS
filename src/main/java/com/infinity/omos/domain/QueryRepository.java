@@ -296,11 +296,11 @@ public class QueryRepository {
     public List<Long> findDjOnToday() {
         LocalDateTime start = LocalDate.now().minusDays(1).atStartOfDay();
         LocalDateTime end = LocalDate.now().minusDays(1).atTime(LocalTime.MAX);
-        return queryFactory.select(follow.toUserId.id)
-                .from(follow)
-                .where(follow.createdDate.between(start, end))
-                .groupBy(follow.toUserId)
-                .orderBy(follow.toUserId.count().desc())
+        return queryFactory.select(posts.userId.id)
+                .from(posts)
+                .where(posts.createdDate.between(start, end))
+                .groupBy(posts.userId.id)
+                .orderBy(posts.id.count().desc())
                 .limit(3)
                 .fetch();
     }
@@ -311,7 +311,6 @@ public class QueryRepository {
         }
         return queryFactory.selectFrom(posts)
                 .where(
-                        posts.isPublic.eq(true),
                         posts.userId.id.eq(userId)
                 )
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
