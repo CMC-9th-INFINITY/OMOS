@@ -3,11 +3,13 @@ package com.infinity.omos.controller;
 import com.infinity.omos.dto.DjprofileDto;
 import com.infinity.omos.dto.DjDto;
 import com.infinity.omos.dto.StateDto;
+import com.infinity.omos.dto.UserRequestDto;
 import com.infinity.omos.service.FollowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +45,20 @@ public class FollowController {
     public ResponseEntity<DjprofileDto> selectFollowProfile(@PathVariable Long fromUserId, @PathVariable Long toUserId) {
         return ResponseEntity.ok(followService.selectFollowCount(fromUserId, toUserId));
     }
+
+    @ApiOperation(value = "팔로워 리스트")
+    @GetMapping("/select/{userId}/follower")
+    public ResponseEntity<List<UserRequestDto>> selectFollower(@PathVariable Long userId){
+        return ResponseEntity.ok(followService.selectFollower(userId));
+    }
+
+    @ApiOperation(value = "팔로잉 리스트")
+    @GetMapping("/select/{userId}/following")
+    public ResponseEntity<List<UserRequestDto>> selectFollowing(@PathVariable Long userId){
+        return ResponseEntity.ok(followService.selectFollowing(userId));
+    }
+
+
 
 
 

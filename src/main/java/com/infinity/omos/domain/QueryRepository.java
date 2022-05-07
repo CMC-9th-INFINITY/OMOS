@@ -6,6 +6,8 @@ import com.infinity.omos.domain.Like.Like;
 import com.infinity.omos.domain.Posts.Posts;
 import com.infinity.omos.domain.Scrap.Scrap;
 import com.infinity.omos.domain.User.User;
+import com.infinity.omos.dto.UserRequestDto;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -351,6 +353,41 @@ public class QueryRepository {
             return jpaQuery.limit(size).fetch();
         }
 
+    }
+
+    public List<UserRequestDto> selectFollowing(User fromUserId){
+        return queryFactory.from(user)
+                .select(Projections.constructor(UserRequestDto.class,
+                        user.id,
+                        user.profileUrl,
+                        user.nickname))
+                .leftJoin(follow).on(user.id.eq(follow.toUserId.id))
+                .where(follow.fromUserId.eq(fromUserId))
+                .fetch();
+    }
+
+    public List<UserRequestDto> selectFollower(User toUserId){
+        return queryFactory.from(user)
+                .select(Projections.constructor(UserRequestDto.class,
+                        user.id,
+                        user.profileUrl,
+                        user.nickname))
+                .leftJoin(follow).on(user.id.eq(follow.fromUserId.id))
+                .where(follow.toUserId.eq(toUserId))
+                .fetch();
+    }
+
+    public List<UserRequestDto> selectBlockList(User fromUserId){
+        return queryFactory.from(user)
+                .select(Projections.constructor(UserRequestDto.class,
+                        user.id,
+                        user.profileUrl,
+                        user.nickname))
+                .leftJoin(block).on(user.id.eq(block.toUserId.id))
+                .where(
+                        block.fromUserId.eq(fromUserId),
+                        block.reportType.eq(ReportType.User))
+                .fetch();
     }
 
 

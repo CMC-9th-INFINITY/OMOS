@@ -23,6 +23,7 @@ public class  AuthController {
     private final AuthService authService;
     private final PostsService postsService;
     private final EmailService emailService;
+    private final S3Service s3Service;
 
 
     @ApiOperation(value = "로그인", notes = "이메일 로그인입니다")
@@ -73,6 +74,7 @@ public class  AuthController {
     public ResponseEntity<StateDto> signOut(@PathVariable Long userId){
         List<MyRecordDto> myRecordDtoList = postsService.selectMyPosts(userId);
         myRecordDtoList.stream().map(MyRecordDto::getRecordId).collect(Collectors.toList()).forEach(postsService::delete);
+        s3Service.deleteFile("profile",userId.toString()+".png");
         return ResponseEntity.ok(authService.signOut(userId));
     }
 

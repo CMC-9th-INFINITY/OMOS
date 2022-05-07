@@ -6,10 +6,7 @@ import com.infinity.omos.domain.Follow.FollowRepository;
 import com.infinity.omos.domain.Posts.PostsRepository;
 import com.infinity.omos.domain.User.User;
 import com.infinity.omos.domain.User.UserRepository;
-import com.infinity.omos.dto.CountDto;
-import com.infinity.omos.dto.DjDto;
-import com.infinity.omos.dto.DjprofileDto;
-import com.infinity.omos.dto.StateDto;
+import com.infinity.omos.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +93,18 @@ public class FollowService {
             throw new RuntimeException("해당 유저는 존재하지 않는 유저입니다.");
         }
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserRequestDto> selectFollower(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        return queryRepository.selectFollower(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserRequestDto> selectFollowing(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        return queryRepository.selectFollowing(user);
     }
 
 
