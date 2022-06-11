@@ -390,5 +390,27 @@ public class QueryRepository {
                 .fetch();
     }
 
+    public List<UserRequestDto> searchDj(String keyword,int size,Long userId){
+        return queryFactory.from(user)
+                .select(Projections.constructor(UserRequestDto.class,
+                        user.id,
+                        user.profileUrl,
+                        user.nickname))
+                .where(
+                        user.nickname.contains(keyword),
+                        ltUserId(userId)
+                )
+                .orderBy(user.id.desc())
+                .limit(size)
+                .fetch();
+    }
+
+    private BooleanExpression ltUserId(Long userId) {
+        if (userId == null) {
+            return null;
+        }
+        return user.id.lt(userId);
+    }
+
 
 }

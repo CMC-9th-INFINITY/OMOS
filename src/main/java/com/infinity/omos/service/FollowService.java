@@ -108,4 +108,10 @@ public class FollowService {
     }
 
 
+    @Transactional(readOnly = true)
+    public List<UserRequestDto> searchDj(String keyword,Long userId, int size){
+        return queryRepository.searchDj(keyword,size,userId);
+    }
+
+
 }

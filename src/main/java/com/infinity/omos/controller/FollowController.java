@@ -58,6 +58,12 @@ public class FollowController {
         return ResponseEntity.ok(followService.selectFollowing(userId));
     }
 
+    @ApiOperation(value = "DJ 검색")
+    @GetMapping("/search")
+    public ResponseEntity<List<UserRequestDto>> searchDj(@RequestParam String keyword, @RequestParam int size, Long userId){
+        return ResponseEntity.ok(followService.searchDj(keyword,userId,size));
+    }
+
 
 
 
