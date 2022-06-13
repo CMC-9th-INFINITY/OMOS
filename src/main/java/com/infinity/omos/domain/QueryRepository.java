@@ -121,7 +121,9 @@ public class QueryRepository {
                 .where(
                         ltPostId(postId),
                         follow.fromUserId.eq(userId),
-                        posts.id.notIn(block(userId)))
+                        posts.id.notIn(block(userId)),
+                        posts.isPublic.eq(true)
+                )
                 .groupBy(posts.id)
                 .orderBy(posts.id.desc())
                 .limit(pageSize)

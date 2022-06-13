@@ -33,10 +33,10 @@ public class BlockController {
         return ResponseEntity.ok(blockService.save(type, reportDto, null));
     }
 
-    @ApiOperation(value = "차단취소", notes = "근데 지금 차단 리스트를 보여주는API가 없어서 아직은 못쓸것같네융")
-    @DeleteMapping("/delete/{blockId}")
-    public ResponseEntity<StateDto> delete(@PathVariable Long blockId) {
-        return ResponseEntity.ok(blockService.delete(blockId));
+    @ApiOperation(value = "차단취소", notes = "")
+    @DeleteMapping("/delete/{fromUserId}/{toUserId}")
+    public ResponseEntity<StateDto> delete(@PathVariable Long fromUserId, @PathVariable Long toUserId) {
+        return ResponseEntity.ok(blockService.delete(fromUserId, toUserId));
     }
 
     @ApiOperation(value = "해당 유저의 다른 유저 차단 목록")

@@ -68,8 +68,11 @@ public class BlockService {
     }
 
     @Transactional
-    public StateDto delete(Long blockId) {
-        Block block = blockRepository.findById(blockId).orElseThrow(() -> new RuntimeException("해당 차단은 존재하지 않는 차단입니다"));
+    public StateDto delete(Long fromUserId, Long toUserId) {
+        User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+
+        Block block = blockRepository.findByFromUserIdAndToUserId(fromUser,toUser).orElseThrow(() -> new RuntimeException("해당 차단은 존재하지 않는 차단입니다"));
         blockRepository.delete(block);
 
         return StateDto.builder().state(true).build();
