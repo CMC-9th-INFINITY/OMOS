@@ -1,9 +1,6 @@
 package com.infinity.omos.controller;
 
-import com.infinity.omos.dto.DjprofileDto;
-import com.infinity.omos.dto.DjDto;
-import com.infinity.omos.dto.StateDto;
-import com.infinity.omos.dto.UserRequestDto;
+import com.infinity.omos.dto.*;
 import com.infinity.omos.service.FollowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,27 +43,23 @@ public class FollowController {
         return ResponseEntity.ok(followService.selectFollowCount(fromUserId, toUserId));
     }
 
-    @ApiOperation(value = "팔로워 리스트")
-    @GetMapping("/select/{userId}/follower")
-    public ResponseEntity<List<UserRequestDto>> selectFollower(@PathVariable Long userId){
-        return ResponseEntity.ok(followService.selectFollower(userId));
+    @ApiOperation(value = "팔로워 리스트", notes = "fromUser는 사용하는 사람, toUser는 프로필주인")
+    @GetMapping("/select/{toUserId}/follower")
+    public ResponseEntity<List<UserResponseDto>> selectFollower(@PathVariable Long toUserId, Long fromUserId) {
+        return ResponseEntity.ok(followService.selectFollower(fromUserId, toUserId));
     }
 
-    @ApiOperation(value = "팔로잉 리스트")
-    @GetMapping("/select/{userId}/following")
-    public ResponseEntity<List<UserRequestDto>> selectFollowing(@PathVariable Long userId){
-        return ResponseEntity.ok(followService.selectFollowing(userId));
+    @ApiOperation(value = "팔로잉 리스트", notes = "fromUser는 사용하는 사람, toUser는 프로필주인")
+    @GetMapping("/select/{toUserId}/following")
+    public ResponseEntity<List<UserResponseDto>> selectFollowing(@PathVariable Long toUserId, Long fromUserId) {
+        return ResponseEntity.ok(followService.selectFollowing(fromUserId, toUserId));
     }
 
     @ApiOperation(value = "DJ 검색")
     @GetMapping("/search")
-    public ResponseEntity<List<UserRequestDto>> searchDj(@RequestParam String keyword, @RequestParam int size, Long userId){
-        return ResponseEntity.ok(followService.searchDj(keyword,userId,size));
+    public ResponseEntity<List<UserRequestDto>> searchDj(@RequestParam String keyword, @RequestParam int size, Long userId) {
+        return ResponseEntity.ok(followService.searchDj(keyword, userId, size));
     }
-
-
-
-
 
 
 }

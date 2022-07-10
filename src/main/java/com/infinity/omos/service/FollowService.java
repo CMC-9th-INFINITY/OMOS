@@ -47,7 +47,7 @@ public class FollowService {
         User fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
         Follow follow = queryRepository.findFollowByUserId(toUser, fromUser);
-        if(follow == null){
+        if (follow == null) {
             return StateDto.builder().state(false).build();
         }
         followRepository.delete(follow);
@@ -95,22 +95,50 @@ public class FollowService {
 
     }
 
+    //TODO 현재는 exist쿼리를 따로 또 하나하나 부르고 있지만, 추후에 하나의 쿼리로 다 가져오는걸 생각해볼것
     @Transactional(readOnly = true)
-    public List<UserRequestDto> selectFollower(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
-        return queryRepository.selectFollower(user);
+    public List<UserResponseDto> selectFollower(Long fromUserId, Long toUserId) {
+        User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+
+        User fromUser;
+        if (fromUserId != null) {
+            fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        } else {
+            fromUser = toUser;
+        }
+
+        return queryRepository.selectFollower(toUser).stream().peek(it ->
+                it.updateIsFollowed(ifNullUserId(fromUser, it, toUser))).collect(Collectors.toList());
     }
 
+    //TODO 현재는 exist쿼리를 따로 또 하나하나 부르고 있지만, 추후에 하나의 쿼리로 다 가져오는걸 생각해볼것
     @Transactional(readOnly = true)
-    public List<UserRequestDto> selectFollowing(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
-        return queryRepository.selectFollowing(user);
+    public List<UserResponseDto> selectFollowing(Long fromUserId, Long toUserId) {
+        User toUser = userRepository.findById(toUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+
+        User fromUser;
+        if (fromUserId != null) {
+            fromUser = userRepository.findById(fromUserId).orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않는 유저입니다"));
+        } else {
+            fromUser = toUser;
+        }
+
+        return queryRepository.selectFollowing(toUser).stream().peek(it ->
+                it.updateIsFollowed(ifNullUserId(fromUser, it, toUser))).collect(Collectors.toList());
+    }
+
+    private Boolean ifNullUserId(User fromUser, UserResponseDto toUser, User reference) {
+        if (fromUser == reference) {
+            return true;
+        } else {
+            return queryRepository.existsFollowByUserId(fromUser, userRepository.getById(toUser.getUserId()));
+        }
     }
 
 
     @Transactional(readOnly = true)
-    public List<UserRequestDto> searchDj(String keyword,Long userId, int size){
-        return queryRepository.searchDj(keyword,size,userId);
+    public List<UserRequestDto> searchDj(String keyword, Long userId, int size) {
+        return queryRepository.searchDj(keyword, size, userId);
     }
 
 

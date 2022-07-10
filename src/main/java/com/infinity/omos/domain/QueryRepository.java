@@ -5,10 +5,13 @@ import com.infinity.omos.domain.Follow.Follow;
 import com.infinity.omos.domain.Like.Like;
 import com.infinity.omos.domain.Posts.Posts;
 import com.infinity.omos.domain.Scrap.Scrap;
+import com.infinity.omos.domain.User.QUser;
 import com.infinity.omos.domain.User.User;
 import com.infinity.omos.dto.UserRequestDto;
+import com.infinity.omos.dto.UserResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanPath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -275,7 +278,8 @@ public class QueryRepository {
                 .select(posts.musicId.id)
                 .from(posts)
                 .where(
-                        posts.createdDate.between(start, end)
+//                        posts.createdDate.between(start, end),
+                        posts.isPublic.eq(true)
                 )
                 .groupBy(posts.musicId)
                 .orderBy(posts.musicId.count().desc())
@@ -289,11 +293,12 @@ public class QueryRepository {
                 .leftJoin(like)
                 .on(posts.id.eq(like.postId.id))
                 .where(
-                        posts.createdDate.between(start, end),
-                        posts.isPublic.eq(true))
+//                        posts.createdDate.between(start, end),
+                        posts.isPublic.eq(true)
+                )
                 .groupBy(posts.id)
                 .orderBy(like.id.count().desc())
-                .limit(3)
+                .limit(5)
                 .fetch();
     }
 
@@ -302,10 +307,13 @@ public class QueryRepository {
         LocalDateTime end = LocalDate.now().minusDays(1).atTime(LocalTime.MAX);
         return queryFactory.select(posts.userId.id)
                 .from(posts)
-                .where(posts.createdDate.between(start, end))
+                .where(
+//                        posts.createdDate.between(start, end),
+                        posts.isPublic.eq(true)
+                )
                 .groupBy(posts.userId.id)
                 .orderBy(posts.id.count().desc())
-                .limit(3)
+                .limit(5)
                 .fetch();
     }
 
@@ -357,21 +365,32 @@ public class QueryRepository {
 
     }
 
-    public List<UserRequestDto> selectFollowing(User fromUserId){
+    public List<UserResponseDto> selectFollowing(User toUserId){
         return queryFactory.from(user)
-                .select(Projections.constructor(UserRequestDto.class,
-                        user.id,
+                .select(Projections.fields(UserResponseDto.class,
+                        user.id.as("userId"),
                         user.profileUrl,
-                        user.nickname))
+                        user.nickname
+                        ))
                 .leftJoin(follow).on(user.id.eq(follow.toUserId.id))
-                .where(follow.fromUserId.eq(fromUserId))
+                .where(follow.fromUserId.eq(toUserId))
                 .fetch();
     }
 
-    public List<UserRequestDto> selectFollower(User toUserId){
+//    private BooleanPath existsFollowByUserId(User fromUser, com.infinity.omos.domain.User.QUser user) {
+//        Integer fetchOne = JPAExpressions
+//                .selectOne()
+//                .from(follow)
+//                .where(follow.fromUserId.eq(fromUser), follow.toUserId.eq(user))
+//                .fetchFirst(); // limit 1
+//
+//        return (BooleanPath)(Boolean)(fetchOne != null);
+//    }
+
+    public List<UserResponseDto> selectFollower(User toUserId){
         return queryFactory.from(user)
-                .select(Projections.constructor(UserRequestDto.class,
-                        user.id,
+                .select(Projections.fields(UserResponseDto.class,
+                        user.id.as("userId"),
                         user.profileUrl,
                         user.nickname))
                 .leftJoin(follow).on(user.id.eq(follow.fromUserId.id))
