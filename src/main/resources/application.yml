@@ -1,0 +1,85 @@
+cloud:
+  aws:
+    credentials:
+      secret-key: zhf01HBXmZxSkyCHXLYiUX8v2c+pIgWyOTYz3cSi
+      access-key: AKIAVIJ5RLU3MFSINEAN
+    s3:
+      bucket: omos-image
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: 'false'
+spotify:
+  clientId: 05f69489f82548b6a19bd16d2201aec8
+  clientSecret: a004734d245543b191515a3a40277687
+mail:
+  smtp:
+    port: 465
+    starttls:
+      enable: true
+      required: true
+    socketFactory:
+      fallback: false
+      class: javax.net.ssl.SSLSocketFactory
+      port: 465
+    auth: true
+AdminMail:
+  id: officialproject111@gmail.com
+  password: fzcymlydvlhpvxfx
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: none
+    show-sql: true
+    open-in-view: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: rdsmaster123
+    username: sumeen99
+    url: jdbc:mysql://omosdb.csv6fh1ifm4d.ap-northeast-2.rds.amazonaws.com:3306/omosdb?serverTimezone=Asia/Seoul&useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+swagger:
+  title: OMOS REST API
+jwt:
+  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
+server:
+  error:
+    include-message: always
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;
+    username: SA
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    generate-ddl: false
+    database: h2
+#  sql:
+#    init:
+#      mode: always
+#      schema-locations: classpath:sql/schema-h2.sql
+#      data-locations: classpath:sql/data-h2.sql
+
+
+

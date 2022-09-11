@@ -22,47 +22,47 @@ import java.util.List;
 @SpringBootTest
 public class GeniusRequestApiTests {
 
-    @Autowired
-    SpotifyApiAuthorization spotifyApiAuthorization;
-
-    @Autowired
-    AuthService authService;
-
-    @Autowired
-    QueryRepository queryRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Test
-    public void requestGeniusSearchApi() throws IOException {
-        RequestGeniusApi geniusRequestApi = new RequestGeniusApi();
-        geniusRequestApi.requestGeniusSearchApi("장범준");
-
-    }
-
-    @Test
-    public void ApiTests() {
-        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-        List<AlbumTrackDto> albumTrackDtos = SpotifyAllSearchApi.getAlbumTrackApi(spotifyApi.getAccessToken(),"01dPJcwyht77brL4JQiR8R");
-        System.out.println(albumTrackDtos.get(1).getMusicTitle());
-        //System.out.println(trackDto.getArtists());
-
-    }
-
-    @Test
-    public void test() {
-        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
-        List<HotTrackDto> trackDtos = SpotifyAllSearchApi.getHotTracksApi(spotifyApi.getAccessToken(),"3HqSLMAZ3g3d5poNaI7GOU");
-        for(HotTrackDto trackDto : trackDtos){
-            System.out.println(trackDto.getMusicTitle());
-        }
-
-    }
-
-    @Test
-    public void repositoryTest(){
-
-    }
+//    @Autowired
+//    SpotifyApiAuthorization spotifyApiAuthorization;
+//
+//    @Autowired
+//    AuthService authService;
+//
+//    @Autowired
+//    QueryRepository queryRepository;
+//
+//    @Autowired
+//    UserRepository userRepository;
+//
+//    @Test
+//    public void requestGeniusSearchApi() throws IOException {
+//        RequestGeniusApi geniusRequestApi = new RequestGeniusApi();
+//        geniusRequestApi.requestGeniusSearchApi("장범준");
+//
+//    }
+//
+//    @Test
+//    public void ApiTests() {
+//        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
+//        List<AlbumTrackDto> albumTrackDtos = SpotifyAllSearchApi.getAlbumTrackApi(spotifyApi.getAccessToken(),"01dPJcwyht77brL4JQiR8R");
+//        System.out.println(albumTrackDtos.get(1).getMusicTitle());
+//        //System.out.println(trackDto.getArtists());
+//
+//    }
+//
+//    @Test
+//    public void test() {
+//        SpotifyApi spotifyApi = spotifyApiAuthorization.clientCredentials_Sync();
+//        List<HotTrackDto> trackDtos = SpotifyAllSearchApi.getHotTracksApi(spotifyApi.getAccessToken(),"3HqSLMAZ3g3d5poNaI7GOU");
+//        for(HotTrackDto trackDto : trackDtos){
+//            System.out.println(trackDto.getMusicTitle());
+//        }
+//
+//    }
+//
+//    @Test
+//    public void repositoryTest(){
+//
+//    }
 }
 
