@@ -72,7 +72,7 @@ jobs:
       run: |
         aws deploy create-deployment \
         --application-name spring-intro \
-        --deployment-group-name omos \
+        --deployment-group-name springboot-intro \
         --file-exists-behavior OVERWRITE \
         --s3-location bucket=spring-intro-build,bundleType=zip,key=spring-intro-build.zip \
         --region ap-northeast-2
