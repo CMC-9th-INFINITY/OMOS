@@ -22,6 +22,7 @@ JAR_NAME=omos-0.0.1-SNAPSHOT.jar
 echo "> JAR Name: $JAR_NAME"
 
 echo "> $JAR_NAME 에 실행권한 추가"
+pwd
 
 chmod +x $JAR_NAME
 
