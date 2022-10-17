@@ -28,8 +28,4 @@ public class ProfileController {
                 .orElse(defaultProfile);
     }
 
-    @GetMapping("/profile/check")
-    public String check(){
-        return "check";
-    }
 }
