@@ -20,6 +20,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./
+      APPLICATION: ${{ secrets.APPLICATION }}
+
 
     steps:
     - uses: actions/checkout@v3
@@ -28,6 +32,14 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+    #application.yml 파일 생성
+    - uses: actions/checkout@3
+    - run: touch ./src/main/resources/application.yml
+    - run: echo "${{env.APPLICATION}}" > ./src/main/resources/application.yml
+    - uses: actions/upload-artifact@v2
+      with:
+        name: application.yml
+        path: ./src/main/resources/application.yml
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
