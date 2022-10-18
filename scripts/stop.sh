@@ -9,9 +9,6 @@ ABSDIR=$(dirname $ABSPATH)
 # import profile.sh
 source ${ABSDIR}/profile.sh
 
-RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/profile)
-echo "reponsdecode=$RESPONSE_CODE"
-
 
 IDLE_PORT=$(find_idle_port)
 
