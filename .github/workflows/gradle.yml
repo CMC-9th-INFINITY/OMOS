@@ -45,9 +45,10 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1 #./gradlew clean build
-      with:
-        arguments: build
+      #uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1 #./gradlew clean build
+      #with:
+      #  arguments: build
+      run : ./gradlew clean build
 
           # 전송할 파일을 담을 디렉토리 생성
     - name: Make Directory for deliver
