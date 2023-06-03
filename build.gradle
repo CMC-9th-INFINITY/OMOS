@@ -83,7 +83,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     //openfeign
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.7'
+    compile("io.github.openfeign:feign-okhttp:10.2.0")
 
 
 }
